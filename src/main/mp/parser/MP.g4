@@ -16,24 +16,26 @@ options{
 program  : declaration+ EOF;
 declaration     : varDec | funcDec | procDec;
 
-varDec          : VAR listOfDecls;
-listOfDecls     : listOfType listOfDecls1;
-listOfDecls1    : SEMI listOfType listOfDecls1 | SEMI;
-listOfType      : listID COLON types ;
-listID          : ID listID1;
-listID1         : COMMA ID listID1 | ;
+//varDec          : VAR listOfDecls;
+varDec            : VAR listOfType (SEMI listOfType)* SEMI;
+//listOfDecls     : listOfType listOfDecls1;
+//listOfDecls1    : SEMI listOfType listOfDecls1 | SEMI;
+//listOfType      : listID COLON types ;
+listOfType      : ID (COMMA ID)* COLON types ;
+//listID          : ID (COMMA ID)*;
+//listID1         : COMMA ID listID1 | ;
 
 // type
 
 types           : BOOLEAN | INTEGER | REAL | STRING | arraycp;
-arraycp         : ARRAY LSB SUBOP? INTLIT DDOT SUBOP? INTLIT RSB OF arrayType;
-arrayType       : BOOLEAN | INTEGER | REAL | STRING;
+arraycp         : ARRAY LSB SUBOP? INTLIT DDOT SUBOP? INTLIT RSB OF (BOOLEAN | INTEGER | REAL | STRING);
+//arrayType       : BOOLEAN | INTEGER | REAL | STRING;
 
 // funcDec
 funcDec         : FUNCTION ID LB paramList RB COLON types SEMI varDec? compound_st;
-paramList       : paramDec paramList1 | ;
-paramList1      : SEMI paramDec paramList1 | ;
-paramDec        : listOfType;
+paramList       : listOfType (SEMI listOfType)* | ;
+//paramList1      : SEMI paramDec paramList1 | ;
+//paramDec        : listOfType;
 compound_st     : BEGIN statement* END;
 
 // procDec
@@ -89,11 +91,11 @@ for_st          : FOR ID ASSIGOP expression (TO | DOWNTO) expression DO statemen
 break_st        : BREAK;
 continue_st     : CONTINUE;
 return_st       : RETURNS expression? ;
-with_st         : WITH listOfDecls DO statement;
+with_st         : WITH listOfType (SEMI listOfType)* SEMI DO statement;
 
 call_st         : ID LB listOfExp RB;
-listOfExp       : expression listOfExp1 | ;
-listOfExp1      : COMMA expression listOfExp1 | ;
+listOfExp       : expression (COMMA expression)* | ;
+//listOfExp1      : COMMA expression listOfExp1 | ;
 
 if_st           : IF expression THEN statement (ELSE statement)?;
 

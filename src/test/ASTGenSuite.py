@@ -29,4 +29,11 @@ class ASTGenSuite(unittest.TestCase):
                 FuncDecl(Id("main"),[],[],[CallStmt(Id("getIntLn"),[])]),
                 FuncDecl(Id("foo"),[],[],[CallStmt(Id("putIntLn"),[IntLiteral(4)])],IntType())]))
         self.assertTrue(TestAST.test(input,expect,302))
-   
+
+    def test_varDec(self):
+        """More complex program"""
+        input = """var a,b,c: integer;"""
+        expect = str(Program([
+                FuncDecl(Id("main"),[],[],[CallStmt(Id("getIntLn"),[])]),
+                FuncDecl(Id("foo"),[],[],[CallStmt(Id("putIntLn"),[IntLiteral(4)])],IntType())]))
+        self.assertTrue(TestAST.test(input,expect,303))

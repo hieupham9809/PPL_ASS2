@@ -1,4 +1,4 @@
-# Generated from d:\HOC\PPL\ass2\assignment2\upload\src\main\mp\parser\MP.g4 by ANTLR 4.7.1
+# Generated from main/mp/parser/MP.g4 by ANTLR 4.7.1
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
@@ -322,6 +322,12 @@ class MPParser ( Parser ):
         def getRuleIndex(self):
             return MPParser.RULE_program
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitProgram" ):
+                return visitor.visitProgram(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -374,6 +380,12 @@ class MPParser ( Parser ):
 
         def getRuleIndex(self):
             return MPParser.RULE_declaration
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitDeclaration" ):
+                return visitor.visitDeclaration(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -436,6 +448,12 @@ class MPParser ( Parser ):
 
         def getRuleIndex(self):
             return MPParser.RULE_varDec
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitVarDec" ):
+                return visitor.visitVarDec(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -501,6 +519,12 @@ class MPParser ( Parser ):
         def getRuleIndex(self):
             return MPParser.RULE_listOfType
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitListOfType" ):
+                return visitor.visitListOfType(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -561,6 +585,12 @@ class MPParser ( Parser ):
 
         def getRuleIndex(self):
             return MPParser.RULE_types
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitTypes" ):
+                return visitor.visitTypes(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -656,6 +686,12 @@ class MPParser ( Parser ):
 
         def getRuleIndex(self):
             return MPParser.RULE_arraycp
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitArraycp" ):
+                return visitor.visitArraycp(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -755,6 +791,12 @@ class MPParser ( Parser ):
         def getRuleIndex(self):
             return MPParser.RULE_funcDec
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFuncDec" ):
+                return visitor.visitFuncDec(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -821,6 +863,12 @@ class MPParser ( Parser ):
         def getRuleIndex(self):
             return MPParser.RULE_paramList
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitParamList" ):
+                return visitor.visitParamList(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -886,6 +934,12 @@ class MPParser ( Parser ):
 
         def getRuleIndex(self):
             return MPParser.RULE_compound_st
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitCompound_st" ):
+                return visitor.visitCompound_st(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -955,6 +1009,12 @@ class MPParser ( Parser ):
         def getRuleIndex(self):
             return MPParser.RULE_procDec
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitProcDec" ):
+                return visitor.visitProcDec(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -1023,6 +1083,12 @@ class MPParser ( Parser ):
 
         def getRuleIndex(self):
             return MPParser.RULE_expression
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExpression" ):
+                return visitor.visitExpression(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -1128,6 +1194,12 @@ class MPParser ( Parser ):
         def getRuleIndex(self):
             return MPParser.RULE_exp1
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExp1" ):
+                return visitor.visitExp1(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -1195,6 +1267,12 @@ class MPParser ( Parser ):
 
         def getRuleIndex(self):
             return MPParser.RULE_exp2
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExp2" ):
+                return visitor.visitExp2(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -1278,6 +1356,12 @@ class MPParser ( Parser ):
         def getRuleIndex(self):
             return MPParser.RULE_exp3
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExp3" ):
+                return visitor.visitExp3(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
     def exp3(self, _p:int=0):
@@ -1351,6 +1435,12 @@ class MPParser ( Parser ):
         def getRuleIndex(self):
             return MPParser.RULE_exp4
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExp4" ):
+                return visitor.visitExp4(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -1417,6 +1507,12 @@ class MPParser ( Parser ):
 
         def getRuleIndex(self):
             return MPParser.RULE_exp5
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExp5" ):
+                return visitor.visitExp5(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -1487,6 +1583,12 @@ class MPParser ( Parser ):
         def getRuleIndex(self):
             return MPParser.RULE_exp6
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExp6" ):
+                return visitor.visitExp6(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -1539,6 +1641,12 @@ class MPParser ( Parser ):
 
         def getRuleIndex(self):
             return MPParser.RULE_exp7
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExp7" ):
+                return visitor.visitExp7(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -1596,6 +1704,12 @@ class MPParser ( Parser ):
         def getRuleIndex(self):
             return MPParser.RULE_operand
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitOperand" ):
+                return visitor.visitOperand(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -1643,6 +1757,12 @@ class MPParser ( Parser ):
 
         def getRuleIndex(self):
             return MPParser.RULE_indexEx
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitIndexEx" ):
+                return visitor.visitIndexEx(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -1720,6 +1840,12 @@ class MPParser ( Parser ):
 
         def getRuleIndex(self):
             return MPParser.RULE_statement
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitStatement" ):
+                return visitor.visitStatement(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -1835,6 +1961,12 @@ class MPParser ( Parser ):
         def getRuleIndex(self):
             return MPParser.RULE_assign_st
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAssign_st" ):
+                return visitor.visitAssign_st(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -1885,6 +2017,12 @@ class MPParser ( Parser ):
 
         def getRuleIndex(self):
             return MPParser.RULE_lhs
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitLhs" ):
+                return visitor.visitLhs(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -1940,6 +2078,12 @@ class MPParser ( Parser ):
 
         def getRuleIndex(self):
             return MPParser.RULE_while_st
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitWhile_st" ):
+                return visitor.visitWhile_st(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -2004,6 +2148,12 @@ class MPParser ( Parser ):
         def getRuleIndex(self):
             return MPParser.RULE_for_st
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFor_st" ):
+                return visitor.visitFor_st(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -2055,6 +2205,12 @@ class MPParser ( Parser ):
         def getRuleIndex(self):
             return MPParser.RULE_break_st
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitBreak_st" ):
+                return visitor.visitBreak_st(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -2085,6 +2241,12 @@ class MPParser ( Parser ):
 
         def getRuleIndex(self):
             return MPParser.RULE_continue_st
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitContinue_st" ):
+                return visitor.visitContinue_st(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -2120,6 +2282,12 @@ class MPParser ( Parser ):
 
         def getRuleIndex(self):
             return MPParser.RULE_return_st
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitReturn_st" ):
+                return visitor.visitReturn_st(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -2180,6 +2348,12 @@ class MPParser ( Parser ):
 
         def getRuleIndex(self):
             return MPParser.RULE_with_st
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitWith_st" ):
+                return visitor.visitWith_st(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -2243,6 +2417,12 @@ class MPParser ( Parser ):
         def getRuleIndex(self):
             return MPParser.RULE_call_st
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitCall_st" ):
+                return visitor.visitCall_st(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -2289,6 +2469,12 @@ class MPParser ( Parser ):
 
         def getRuleIndex(self):
             return MPParser.RULE_listOfExp
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitListOfExp" ):
+                return visitor.visitListOfExp(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -2362,6 +2548,12 @@ class MPParser ( Parser ):
 
         def getRuleIndex(self):
             return MPParser.RULE_if_st
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitIf_st" ):
+                return visitor.visitIf_st(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
