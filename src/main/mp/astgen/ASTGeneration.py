@@ -59,18 +59,24 @@ class ASTGeneration(MPVisitor):
                         temp
                                                         )
     def visitFuncDec(self, ctx:MPParser.FuncDecContext):
-        name = ctx.ID().getText()
+        name = Id(ctx.ID().getText())
         param = self.visit(ctx.paramList())
         returnType = self.visit(ctx.types())
-        local = self.visit(ctx.varDec())
+        if ctx.varDec():
+            local = self.visit(ctx.varDec())
+        else: local = []
         body = self.visit(ctx.compound_st())
         return FuncDecl(name,param,local,body,returnType)
 
     def visitProcDec(self, ctx:MPParser.ProcDecContext):
-        name = ctx.ID().getText()
+        name = Id(ctx.ID().getText())
         param = self.visit(ctx.paramList())
-        local = self.visit(ctx.varDec())
-        body = self.visit(ctx.compound_st())
+        if ctx.varDec():
+            local = self.visit(ctx.varDec())
+        else: local = []
+        if ctx.compound_st():
+            body = self.visit(ctx.compound_st())
+        else: body = []
         return FuncDecl(name,param,local,body)
     def visitParamList(self, ctx:MPParser.ParamListContext):
         listOfVarDecl = []
@@ -90,7 +96,10 @@ class ASTGeneration(MPVisitor):
             return []
         else:
             for statement in statements:
-                statementsList.append(self.visit(ctx.statement()))
+                if statement.assign_st():
+                    statementsList += self.visit(statement)
+                else:
+                    statementsList.append(self.visit(statement))
                 '''if statement.assign_st():
                     statementsList.append(self.visit(statement.assign_st()))
                 elif statement.if_st():
@@ -135,7 +144,18 @@ class ASTGeneration(MPVisitor):
         else: 
             return self.visit(ctx.with_st())
 
-    
+    def visitAssign_st(self, ctx:MPParser.Assign_stContext):
+        assignList = []
+        lhs = ctx.lhs()
+        print(lhs)
+        exp = ctx.expression()
+        print(exp)
+
+        for i in reversed(lhs):
+            assignList.append(Assign(i,exp))
+            exp = i
+        return assignList
+
     
 '''
     def visitFuncdecl(self,ctx:MPPars
