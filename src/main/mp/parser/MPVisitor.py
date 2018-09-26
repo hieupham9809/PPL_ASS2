@@ -154,6 +154,11 @@ class MPVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by MPParser#full_call_st.
+    def visitFull_call_st(self, ctx:MPParser.Full_call_stContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by MPParser#call_st.
     def visitCall_st(self, ctx:MPParser.Call_stContext):
         return self.visitChildren(ctx)

@@ -87,7 +87,7 @@ statement       : assign_st SEMI
                 | break_st SEMI
                 | continue_st SEMI
                 | return_st SEMI
-                | call_st SEMI
+                | full_call_st
                 | compound_st 
                 | with_st;
 
@@ -101,7 +101,7 @@ break_st        : BREAK;
 continue_st     : CONTINUE;
 return_st       : RETURNS expression? ;
 with_st         : WITH listOfType (SEMI listOfType)* SEMI DO statement;
-
+full_call_st    : call_st SEMI;
 call_st         : ID LB listOfExp RB;
 listOfExp       : expression (COMMA expression)* | ;
 //listOfExp1      : COMMA expression listOfExp1 | ;

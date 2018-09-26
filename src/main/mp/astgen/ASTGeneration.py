@@ -221,7 +221,7 @@ class ASTGeneration(MPVisitor):
         if ctx.operand():
             return self.visit(ctx.operand())
         else: return self.visit(ctx.call_st())
-    #visitOperand problem: FloatLiteral
+    ####visitOperand problem: FloatLiteral
     def visitOperand(self, ctx:MPParser.OperandContext):
         if ctx.INTLIT(): return IntLiteral(int(ctx.INTLIT().getText()))
         elif ctx.REALIT(): return FloatLiteral(float(ctx.REALIT().getText()))
@@ -229,11 +229,12 @@ class ASTGeneration(MPVisitor):
         elif ctx.ID(): return Id(ctx.ID().getText())
         else: return BooleanLiteral(bool(ctx.BOOLIT().getText()))
 
-    def visitIndexEx(self, ctx:MPParser.IndexExContext):
-        return ArrayCell(self.visit(ctx.exp5()), self.visit(ctx.expression()))
+    #def visitIndexEx(self, ctx:MPParser.IndexExContext):
+    #    return ArrayCell(self.visit(ctx.exp5()), self.visit(ctx.expression()))
     
-    #def visitWhile_st(self, ctx:MPParser.While_stContext):
-        
+    def visitWhile_st(self, ctx:MPParser.While_stContext): 
+        return While(self.visit(ctx.expression()),self.visit(ctx.statement()))
+
     def visitBreak_st(self, ctx:MPParser.Break_stContext):
         return Break()
     def visitContinue_st(self, ctx:MPParser.Continue_stContext):
@@ -242,9 +243,38 @@ class ASTGeneration(MPVisitor):
         if ctx.expression():
             return Return(self.visit(ctx.expression()))
         else: return Return()
-            
-
     
+    def visitCall_st(self, ctx:MPParser.Call_stContext):
+        return CallExpr(Id(ctx.ID().getText()),self.visit(ctx.listOfExp()))
+    
+    #################################
+    def visitFull_call_st(self, ctx:MPParser.Full_call_stContext):
+        temp = self.visit(ctx.call_st())
+        return CallStmt(temp.method(),temp.param())
+    def visitListOfExp(self, ctx:MPParser.ListOfExpContext):
+        listOfExp = []
+        if not ctx.expression():
+            return []
+        elif type(ctx.expression()) is list:
+            for expr in ctx.expression():
+                listOfExp.append(self.visit(expr))
+        else: listOfExp.append(self.visit(ctx.expression()))
+        return listOfExp
+    
+    def visitIf_st(self, ctx:MPParser.If_stContext):
+        return If(self.visit(ctx.expression())
+            ,self.visit(ctx.statement(0)) if type(ctx.statement()) is list else self.visit(ctx.statement(0))
+            ,self.visit(ctx.statement(1)) if type(ctx.statement()) is list else [])
+        
+    def visitFor_st(self, ctx:MPParser.For_stContext):
+        id = Id(ctx.ID().getText())
+        expr1 = self.visit(ctx.expression(0))
+        expr2 = self.visit(ctx.expression(1))
+        loop = self.visit(ctx.statement())
+        up = True if ctx.TO() else False 
+        return For(id,expr1,expr2,up,loop)
+
+        
 
     
 

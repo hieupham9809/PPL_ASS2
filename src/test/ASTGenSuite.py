@@ -51,3 +51,19 @@ class ASTGenSuite(unittest.TestCase):
                 FuncDecl(Id("main"),[],[],[CallStmt(Id("getIntLn"),[])]),
                 FuncDecl(Id("foo"),[],[],[CallStmt(Id("putIntLn"),[IntLiteral(4)])],IntType())]))
         self.assertTrue(TestAST.test(input,expect,305))
+    def test_If(self):
+        input = """function foo ():INTEGER; begin
+            if 5 > 3 then a := b; else b:=c;
+        end"""
+        expect = str(Program([
+                FuncDecl(Id("main"),[],[],[CallStmt(Id("getIntLn"),[])]),
+                FuncDecl(Id("foo"),[],[],[CallStmt(Id("putIntLn"),[IntLiteral(4)])],IntType())]))
+        self.assertTrue(TestAST.test(input,expect,306))
+    def test_For(self):
+        input = """function foo ():INTEGER; begin
+            for i := 1 to 5 do a:=b
+        end"""
+        expect = str(Program([
+                FuncDecl(Id("main"),[],[],[CallStmt(Id("getIntLn"),[])]),
+                FuncDecl(Id("foo"),[],[],[CallStmt(Id("putIntLn"),[IntLiteral(4)])],IntType())]))
+        self.assertTrue(TestAST.test(input,expect,307))
