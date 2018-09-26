@@ -43,3 +43,11 @@ class ASTGenSuite(unittest.TestCase):
                 FuncDecl(Id("main"),[],[],[CallStmt(Id("getIntLn"),[])]),
                 FuncDecl(Id("foo"),[],[],[CallStmt(Id("putIntLn"),[IntLiteral(4)])],IntType())]))
         self.assertTrue(TestAST.test(input,expect,304))
+    def test_Assign_with_BinaryOp(self):
+        input = """function foo ():INTEGER; begin
+            a := b:= 3 = 4;
+        end"""
+        expect = str(Program([
+                FuncDecl(Id("main"),[],[],[CallStmt(Id("getIntLn"),[])]),
+                FuncDecl(Id("foo"),[],[],[CallStmt(Id("putIntLn"),[IntLiteral(4)])],IntType())]))
+        self.assertTrue(TestAST.test(input,expect,305))

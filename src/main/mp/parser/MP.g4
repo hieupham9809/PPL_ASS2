@@ -54,8 +54,17 @@ exp5        : exp5 LSB expression RSB | exp6;
 exp6        : LB expression RB | exp7;
 exp7        : operand | call_st ;
 operand     : INTLIT | REALIT | STRLIT | ID | BOOLIT;
-
-
+/*
+expression  : exp1 ((AND THEN) exp1 | (OR ELSE) exp1)*;
+exp1        : exp2 (EQOP | NEQOP | LTOP | LTEOP | GTOP | GTEOP) exp2 | exp2;
+exp2        : exp3 ((ADDOP | SUBOP | OR) exp3)*;
+exp3        : exp4 ((DIVOP | MULOP | DIV | MOD | AND) exp4)*;
+exp4        : (SUBOP | NOT)* exp5;
+exp5        : exp6 (LSB expression RSB)*;
+exp6        : exp7 | LB expression RB;
+exp7        : operand | call_st;
+operand     : INTLIT | REALIT | STRLIT | ID | BOOLIT;
+*/
 
 indexEx : exp5 LSB expression RSB;
 /* 
@@ -82,7 +91,7 @@ statement       : assign_st SEMI
                 | compound_st 
                 | with_st;
 
-assign_st       : lhs ASSIGOP (assign_st | expression);
+assign_st       : (lhs ASSIGOP)+ expression;
              
 lhs             : ID | indexEx ;
 

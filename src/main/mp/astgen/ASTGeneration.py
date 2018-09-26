@@ -149,14 +149,105 @@ class ASTGeneration(MPVisitor):
         lhs = ctx.lhs()
         print(lhs)
         exp = ctx.expression()
-        print(exp)
-
-        for i in reversed(lhs):
-            assignList.append(Assign(i,exp))
-            exp = i
+        
+        if type(lhs) is list:
+            for i in reversed(lhs):
+                assignList.append(Assign(self.visit(i),self.visit(exp)))
+                exp = i
+        else: assignList.append(Assign(self.visit(lhs),self.visit(exp)))
         return assignList
 
+    def visitLhs(self, ctx:MPParser.LhsContext):
+        if ctx.ID():
+            return ctx.ID().getText()
+        else: return self.visit(ctx.indexEx())
+    def visitIndexEx(self, ctx:MPParser.IndexExContext):
+        return ArrayCell(self.visit(ctx.exp5()),self.visit(ctx.expression()))
+    def visitExpression(self, ctx:MPParser.ExpressionContext):
+        if (ctx.THEN()):
+            return BinaryOp('andthen',self.visit(ctx.expression()),self.visit(ctx.exp1()))
+        elif (ctx.ELSE()):
+            return BinaryOp('orelse',self.visit(ctx.expression()), self.visit(ctx.exp1()))
+        else: return self.visit(ctx.exp1())
+    def visitExp1(self, ctx:MPParser.Exp1Context):
+        op = ""
+        if ctx.EQOP(): op = ctx.EQOP().getText()
+        elif ctx.NEQOP(): op = ctx.NEQOP().getText()
+        elif ctx.LTOP(): op = ctx.LTOP().getText()
+        elif ctx.LTEOP(): op = ctx.LTEOP().getText()
+        elif ctx.GTOP(): op = ctx.GTOP().getText()
+        elif ctx.GTEOP(): op = ctx.GTEOP().getText()
+        else: return self.visit(ctx.exp2(0))
+        
+        return BinaryOp(op,self.visit(ctx.exp2(0)),self.visit(ctx.exp2(1)))
+
+    def visitExp2(self, ctx:MPParser.Exp2Context):
+        op = ""
+        if ctx.ADDOP(): op = ctx.ADDOP().getText()
+        elif ctx.SUBOP(): op = ctx.SUBOP().getText()
+        elif ctx.OR(): op = ctx.OR().getText()
+        else: return self.visit(ctx.exp3())
+
+        return BinaryOp(op, self.visit(ctx.exp2()), self.visit(ctx.exp3()))
+
+    def visitExp3(self, ctx:MPParser.Exp3Context):
+        op = ""
+        if ctx.DIVOP(): op = ctx.DIVOP().getText()
+        elif ctx.MULOP(): op = ctx.MULOP().getText()
+        elif ctx.DIV(): op = ctx.DIV().getText()
+        elif ctx.MOD(): op = ctx.MOD().getText()
+        elif ctx.AND(): op = ctx.AND().getText()
+        else: return self.visit(ctx.exp4())
+
+        return BinaryOp(op, self.visit(ctx.exp3()), self.visit(ctx.exp4()))
+
+    def visitExp4(self, ctx:MPParser.Exp4Context):
+        op = ""
+        if ctx.SUBOP(): op = ctx.SUBOP().getText()
+        elif ctx.NOT(): op = ctx.NOT().getText()
+        else: return self.visit(ctx.exp5())
+
+        return UnaryOp(op, self.visit(ctx.exp4()))
     
+    def visitExp5(self, ctx:MPParser.Exp5Context):
+        if ctx.LSB():
+            return ArrayCell(self.visit(ctx.exp5()), self.visit(ctx.expression()))
+        else: return self.visit(ctx.exp6())
+    def visitExp6(self, ctx:MPParser.Exp6Context):
+        if ctx.LB():
+            return self.visit(ctx.expression())
+        else: return self.visit(ctx.exp7())
+    def visitExp7(self, ctx:MPParser.Exp7Context):
+        if ctx.operand():
+            return self.visit(ctx.operand())
+        else: return self.visit(ctx.call_st())
+    #visitOperand problem: FloatLiteral
+    def visitOperand(self, ctx:MPParser.OperandContext):
+        if ctx.INTLIT(): return IntLiteral(int(ctx.INTLIT().getText()))
+        elif ctx.REALIT(): return FloatLiteral(float(ctx.REALIT().getText()))
+        elif ctx.STRLIT(): return StringLiteral(ctx.STRLIT().getText())
+        elif ctx.ID(): return Id(ctx.ID().getText())
+        else: return BooleanLiteral(bool(ctx.BOOLIT().getText()))
+
+    def visitIndexEx(self, ctx:MPParser.IndexExContext):
+        return ArrayCell(self.visit(ctx.exp5()), self.visit(ctx.expression()))
+    
+    #def visitWhile_st(self, ctx:MPParser.While_stContext):
+        
+    def visitBreak_st(self, ctx:MPParser.Break_stContext):
+        return Break()
+    def visitContinue_st(self, ctx:MPParser.Continue_stContext):
+        return Continue()
+    def visitReturn_st(self, ctx:MPParser.Return_stContext):
+        if ctx.expression():
+            return Return(self.visit(ctx.expression()))
+        else: return Return()
+            
+
+    
+
+    
+
 '''
     def visitFuncdecl(self,ctx:MPPars
         er.FuncdeclContext):
