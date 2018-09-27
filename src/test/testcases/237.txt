@@ -1,0 +1,6 @@
+function foo(c: real): integer;
+                   BEGIN
+                    foo (3,a+1);
+                    foo1();
+                    return;
+                   END

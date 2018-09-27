@@ -1,0 +1,6 @@
+function testCALL(c: real): integer;
+                   BEgin
+                    testCALL(1,a<>1,a[1]);
+                    return 1;
+                   EnD
+                   

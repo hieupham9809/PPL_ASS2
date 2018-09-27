@@ -1,0 +1,1 @@
+Program([FuncDecl(Id(foo),[],VoidType(),[],[While(BooleanLiteral(False),[CallStmt(Id(bar),[])])])])

@@ -1,0 +1,8 @@
+
+            procedure foo();
+            begin
+                if a = 0 then
+                    if b = a then
+                        bar();
+            end
+            

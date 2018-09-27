@@ -1,0 +1,1 @@
+procedure,foo,(,),;,begin,while,trUE,do,begin,bar,(,),;,end,end,<EOF>

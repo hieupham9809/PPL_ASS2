@@ -1,0 +1,7 @@
+function foo(c: real; d: integer): integer;
+                   BEGIN
+                    for ()  do begin
+                    d := c [a] + b ; 
+                    continue;
+                    return c; end
+                   END

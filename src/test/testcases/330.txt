@@ -1,0 +1,7 @@
+
+            fUNCtiON _1(): string ;
+            begin
+                foo("abc");
+                bar("xy\nz");
+            end
+            

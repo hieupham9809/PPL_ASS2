@@ -1,0 +1,12 @@
+
+        function foo ():BOOLEAN; 
+        begin
+            if a = 9 then
+            begin
+                x := y := .5e3;
+                bar(TrUe AND tHeN false);
+            end
+            else
+                executeElseStatement(1,"2",a);
+        end
+        

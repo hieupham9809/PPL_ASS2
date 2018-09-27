@@ -1,0 +1,8 @@
+pROCEDURE foo(c: real) ;
+                   var x:real ;
+                   BEGIN
+                    whILe(a<>1) do BEGin
+                        while(1) do x:=1;
+                        x := x + 1;
+                    end
+                   END

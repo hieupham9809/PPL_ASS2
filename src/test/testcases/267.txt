@@ -1,0 +1,6 @@
+function foo(c: real; d: integer): integer;
+                   BEGIN
+                    while (1) do:
+                    c := foo1(c, d);
+                    return c;
+                   END

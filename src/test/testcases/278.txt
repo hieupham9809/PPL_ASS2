@@ -1,0 +1,8 @@
+
+                function sum_real_array(a: array[0 .. 10] of real;n:integer):real;
+                var i:integer;s:real;
+                BEgin
+                    a:=:=4;
+                     Writeln("Sum of real array: "+sum_real_array(a,n));
+                EnD
+                

@@ -1,0 +1,1 @@
+Program([FuncDecl(Id(foo),[],VoidType(),[],[While(BinaryOp(<,IntLiteral(1),IntLiteral(2)),[While(FloatLiteral(0.0),[CallStmt(Id(something),[])])])])])

@@ -1,0 +1,7 @@
+
+        procedure _foo123(); 
+        begin
+            for i := 1 to 1e3 do
+                a := b := fALsE;
+        end
+        

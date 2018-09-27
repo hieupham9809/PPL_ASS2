@@ -1,0 +1,10 @@
+
+                Var R,S,P:real;
+                pROCEDURE Scalc() ;
+                Begin
+                    Read(R);
+                    S := 3.14 * R * R;
+                    P := 2 * 3.14 * R;
+                    return;
+                End
+                

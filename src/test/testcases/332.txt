@@ -1,0 +1,3 @@
+
+            VaR myVar : INTEGER ; foo: real;
+            

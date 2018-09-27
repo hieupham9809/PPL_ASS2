@@ -1,0 +1,1 @@
+function,foo,(,c,:,real,),:,real,;,var,x,,,y,:,array,[,m,..,n,],of,real,;,BEGIN,a,[,m,+,n,],:=,a,[,m,+,1,],;,foo,(,),[,m,*,1,],:=,a,[,a,div,3,],;,END,<EOF>

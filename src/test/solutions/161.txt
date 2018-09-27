@@ -1,0 +1,1 @@
+proceDure,Hello,(,a,,,b,:,integer,),;,begin,a,:=,b,+,c,;,writeln,(,Hello, world!,),;,end,<EOF>

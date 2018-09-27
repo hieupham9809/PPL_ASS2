@@ -1,0 +1,1 @@
+var d:array [ abc .. 5 ] of integer

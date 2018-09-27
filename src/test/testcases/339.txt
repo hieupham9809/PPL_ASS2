@@ -1,0 +1,15 @@
+
+            procedure foo();
+            begin
+                if 1 then
+                begin
+                    if 2 then
+                    begin
+                        if 3 then
+                            bar();
+                    end
+                end
+                else
+                    print("This is the \'else\' of if 1");
+            end
+            

@@ -1,0 +1,6 @@
+FUNCTION foo(a,b: integer; g: real; j:array [1 .. 5] of real):array [5 .. 7] of integer;
+                  var x,y,z,k: real ;
+
+                  BEGIN
+
+                  END

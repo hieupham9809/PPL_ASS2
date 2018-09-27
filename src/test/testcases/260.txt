@@ -1,0 +1,10 @@
+
+                Var name: String;
+                Procedure Main();
+                Begin
+	               (*this is line*)
+	               writeln();//this is new line}
+	               writeln(name);
+	               readln();
+                End
+                

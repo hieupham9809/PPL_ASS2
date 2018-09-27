@@ -1,0 +1,7 @@
+
+        procedure _foo123(); 
+        begin
+            with a,b:integer;c:STRING; do
+                d := c[a] + b;
+        end
+        

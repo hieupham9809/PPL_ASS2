@@ -28,7 +28,7 @@ listOfType      : ID (COMMA ID)* COLON types ;
 // type
 
 types           : BOOLEAN | INTEGER | REAL | STRING | arraycp;
-arraycp         : ARRAY LSB SUBOP? INTLIT DDOT SUBOP? INTLIT RSB OF (BOOLEAN | INTEGER | REAL | STRING);
+arraycp         : ARRAY LSB arrayindex DDOT arrayindex RSB OF (BOOLEAN | INTEGER | REAL | STRING);
 //arrayType       : BOOLEAN | INTEGER | REAL | STRING;
 
 // funcDec
@@ -107,7 +107,7 @@ listOfExp       : expression (COMMA expression)* | ;
 //listOfExp1      : COMMA expression listOfExp1 | ;
 
 if_st           : IF expression THEN statement (ELSE statement)?;
-
+arrayindex      : SUBOP? INTLIT;
 //key insensitive
 fragment A: [aA];
 fragment B: [bB];
@@ -172,7 +172,7 @@ WITH        : W I T H;
 
 
 fragment IDCHAR: (A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z);
-ID  : (IDCHAR | '_')(IDCHAR | '_' | '0'..'9')*;
+
 // Operators
 ASSIGOP : ':=';
 ADDOP   : '+';
@@ -194,6 +194,7 @@ INTLIT  : DIGIT+;
 REALIT  : ((NUM_HAS_P | DIGIT+) EXPN) | NUM_HAS_P;
 BOOLIT  : TRUE | FALSE;
 
+ID  : (IDCHAR | '_')(IDCHAR | '_' | '0'..'9')*;
 
 
 UNCLOSE_STRING: '"' (~["'\n\b\f\\] | ('\\' ["'nbf\\]))*              

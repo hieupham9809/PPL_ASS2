@@ -1,0 +1,10 @@
+
+                procedure test1() ;
+                begin
+	               if a=b then
+	               bEGin
+		                 b := c := 6;
+		                 if(e <> f) then foo(a,c); else a := b := c ;
+	               end
+                end
+                

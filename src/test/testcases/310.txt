@@ -1,0 +1,11 @@
+
+        function foo ():BOOLEAN; 
+        var x,y: real; a,b,c: INTEGER;
+        begin
+            a := 0;
+            while (a < 10) AND (x <> 0.) do
+            begin 
+                a := a + 1;
+            end
+        end
+        

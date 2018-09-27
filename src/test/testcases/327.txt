@@ -1,0 +1,6 @@
+
+            FUNCTION _1(A,__b,c_2:INTEGER) : ARRAY [0 .. 10] of sTrInG;
+            var x_, _y_, z : real; m,n: INTEGER;
+            begin
+            end
+            

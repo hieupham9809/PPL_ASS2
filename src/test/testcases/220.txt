@@ -1,0 +1,8 @@
+function foo(c: real): STRIng;
+                   BEGIN
+                    with i, j: integer; tmp: real; do
+                    print(i, j, tmp);
+                    FOR i:=1 to m+10
+                    do
+                        s := s + 1;
+                   END

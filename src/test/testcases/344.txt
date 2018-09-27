@@ -1,0 +1,9 @@
+
+            procedure foo();
+            begin
+                WHILE 1 < 2 do wHiLe 0. do
+                    begin
+                        While True dO nothing();
+                    end
+            end
+            

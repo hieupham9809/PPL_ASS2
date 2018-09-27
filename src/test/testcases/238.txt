@@ -1,0 +1,6 @@
+function foo(c: real): integer;
+                   BEGIN
+                    text(insert); { colour}
+                	{.comment here.}
+                    return func(a(1,2));
+                   END

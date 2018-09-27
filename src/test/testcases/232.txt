@@ -1,0 +1,7 @@
+pROCEDURE foo(c: real);
+                   BEGIN
+                    FOR i:=1 to m+10 do beGin
+                        brEaK;
+                    end
+                    break;
+                   END

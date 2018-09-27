@@ -1,0 +1,1 @@
+Program([FuncDecl(Id(_1),[VarDecl(Id(A),IntType)],ArrayType(0,10,StringType),[],[])])

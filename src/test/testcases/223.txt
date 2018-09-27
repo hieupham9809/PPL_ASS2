@@ -1,0 +1,5 @@
+pROCEDURE foo(d: real) ;
+                   BEGIN
+                    "2"[4]:=d;
+                    END
+                    

@@ -1,0 +1,1 @@
+function foo_ASSIGN_with_index_express(c: real): real ; y:=a[0]

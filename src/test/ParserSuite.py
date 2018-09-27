@@ -4,17 +4,15 @@ from TestUtils import TestParser
 
 class ParserSuite(unittest.TestCase):
     def test_function_DECLARE_non_upcase(self):
-        """function foo(a: integer; c: real) : array [ 1 .. 20 ] of integer;
-        var m, n : real;
-        begin
-
-        end"""
-        input = """function foo(a: integer; c: real) : array [ 1 .. 20 ] of integer;
-        var m, n : real;
-        p : integer;
-        begin
-
-        end"""
+        input ="""
+            procedure foo();
+            begin
+                while trUE do 
+                begin
+                    bar();
+                end
+            end
+        """
         expect = "successful"
         self.assertTrue(TestParser.test(input, expect, 201))
 

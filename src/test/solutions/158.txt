@@ -1,0 +1,1 @@
+BEGIN,with,a,,,b,:,integer,;,do,foo2,(,a,,,b,,,abccc,),;,END,<EOF>

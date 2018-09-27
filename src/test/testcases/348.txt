@@ -1,0 +1,12 @@
+
+            procedure foo();
+            begin
+                FOR x := -   1 TO 1[2] do
+                    for y := 0 downto -10e1
+                    do
+                        begin
+                            a();
+                            b();
+                        end
+            end
+            

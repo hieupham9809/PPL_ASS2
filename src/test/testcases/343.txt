@@ -1,0 +1,11 @@
+
+            procedure foo();
+            begin
+                WHILE 1 < 2 do 
+                begin
+                    wHiLe 0. do
+                        something();
+                        (*This is a comment*)
+                end
+            end
+            

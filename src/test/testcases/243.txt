@@ -1,0 +1,6 @@
+
+                proceDure Hello(b:integer);
+                begin
+                    a := b := b + c;
+                end
+                

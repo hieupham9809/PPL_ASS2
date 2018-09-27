@@ -1,0 +1,1 @@
+a[m+true] = a[b[2]+1] := foo()[m*1] := a[a div 3] := (a>=m) and then (b<=n);

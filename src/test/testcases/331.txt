@@ -1,0 +1,7 @@
+
+            procedure _1() ;
+            begin
+                foo("abc");
+                bar("xy\nz",1.5e0);
+            end
+            

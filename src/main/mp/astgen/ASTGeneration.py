@@ -28,14 +28,16 @@ class ASTGeneration(MPVisitor):
             listid, types = self.visit(x)
             
             for id in listid:
-                listOfVarDecl.append(VarDecl(id,types))
+                listOfVarDecl.append(VarDecl(Id(id),types))
             #print(i for i in listOfVarDecl)
         return (listOfVarDecl)
         #return self.visit()
     def visitListOfType(self, ctx:MPParser.ListOfTypeContext):
         listid = []
-        for listlistid in ctx.ID():
-            listid.append(listlistid.getText())
+        if type(ctx.ID()) is list:
+            for listlistid in ctx.ID():
+                listid.append(listlistid.getText())
+        else: listid.append(ctx.ID().getText())
         
         
         return listid,self.visit(ctx.types())
@@ -54,10 +56,14 @@ class ASTGeneration(MPVisitor):
         elif ctx.REAL(): temp = FloatType()
         else: temp = StringType()
         
-        return ArrayType(IntLiteral(int(ctx.INTLIT(0).getText())),
-                        IntLiteral(int(ctx.INTLIT(1).getText())),
+        return ArrayType(int(self.visit(ctx.arrayindex(0))),
+                        int(self.visit(ctx.arrayindex(1))),
                         temp
                                                         )
+    def visitArrayindex(self, ctx:MPParser.ArrayindexContext):
+        if ctx.SUBOP():
+            return str(ctx.SUBOP().getText()) + str(ctx.INTLIT().getText())
+        else: return str(ctx.INTLIT().getText())
     def visitFuncDec(self, ctx:MPParser.FuncDecContext):
         name = Id(ctx.ID().getText())
         param = self.visit(ctx.paramList())
@@ -87,7 +93,7 @@ class ASTGeneration(MPVisitor):
             for x in listOfType:
                 listid, types = self.visit(x)
                 for id in listid:
-                    listOfVarDecl.append(VarDecl(id,types))
+                    listOfVarDecl.append(VarDecl(Id(id),types))
             return listOfVarDecl
     def visitCompound_st(self, ctx:MPParser.Compound_stContext):
         statements = ctx.statement()
@@ -96,30 +102,8 @@ class ASTGeneration(MPVisitor):
             return []
         else:
             for statement in statements:
-                if statement.assign_st():
-                    statementsList += self.visit(statement)
-                else:
-                    statementsList.append(self.visit(statement))
-                '''if statement.assign_st():
-                    statementsList.append(self.visit(statement.assign_st()))
-                elif statement.if_st():
-                    statementsList.append(self.visit(statement.if_st()))
-                elif statement.for_st():
-                    statementsList.append(self.visit(statement.for_st()))
-                elif statement.while_st():
-                    statementsList.append(self.visit(statement.while_st()))
-                elif statement.break_st():
-                    statementsList.append(self.visit(statement.break_st()))
-                elif statement.continue_st():
-                    statementsList.append(self.visit(statement.continue_st()))
-                elif statement.return_st():
-                    statementsList.append(self.visit(statement.return_st()))
-                elif statement.call_st():
-                    statementsList.append(self.visit(statement.call_st()))
-                elif statement.compound_st():
-                    statementsList.append(self.visit(statement.compound_st()))
-                else: 
-                    statementsList.append(self.visit(statement.with_st()))'''
+                statementsList += self.visit(statement)
+            
         return statementsList
 
     def visitStatement(self, ctx:MPParser.StatementContext):
@@ -137,8 +121,8 @@ class ASTGeneration(MPVisitor):
             return self.visit(ctx.continue_st())
         elif ctx.return_st():
             return self.visit(ctx.return_st())
-        elif ctx.call_st():
-            return self.visit(ctx.call_st())
+        elif ctx.full_call_st():
+            return self.visit(ctx.full_call_st())
         elif ctx.compound_st():
             return self.visit(ctx.compound_st())
         else: 
@@ -147,7 +131,7 @@ class ASTGeneration(MPVisitor):
     def visitAssign_st(self, ctx:MPParser.Assign_stContext):
         assignList = []
         lhs = ctx.lhs()
-        print(lhs)
+        #print(lhs)
         exp = ctx.expression()
         
         if type(lhs) is list:
@@ -159,7 +143,7 @@ class ASTGeneration(MPVisitor):
 
     def visitLhs(self, ctx:MPParser.LhsContext):
         if ctx.ID():
-            return ctx.ID().getText()
+            return Id(ctx.ID().getText())
         else: return self.visit(ctx.indexEx())
     def visitIndexEx(self, ctx:MPParser.IndexExContext):
         return ArrayCell(self.visit(ctx.exp5()),self.visit(ctx.expression()))
@@ -226,31 +210,41 @@ class ASTGeneration(MPVisitor):
         if ctx.INTLIT(): return IntLiteral(int(ctx.INTLIT().getText()))
         elif ctx.REALIT(): return FloatLiteral(float(ctx.REALIT().getText()))
         elif ctx.STRLIT(): return StringLiteral(ctx.STRLIT().getText())
-        elif ctx.ID(): return Id(ctx.ID().getText())
-        else: return BooleanLiteral(bool(ctx.BOOLIT().getText()))
+        elif ctx.BOOLIT(): return BooleanLiteral(True if (ctx.BOOLIT().getText().lower()) == 'true' else False)
+        else: return Id(ctx.ID().getText())
 
     #def visitIndexEx(self, ctx:MPParser.IndexExContext):
     #    return ArrayCell(self.visit(ctx.exp5()), self.visit(ctx.expression()))
     
     def visitWhile_st(self, ctx:MPParser.While_stContext): 
-        return While(self.visit(ctx.expression()),self.visit(ctx.statement()))
+        return [While(self.visit(ctx.expression()),self.visit(ctx.statement()))]
 
     def visitBreak_st(self, ctx:MPParser.Break_stContext):
-        return Break()
+        return [Break()]
     def visitContinue_st(self, ctx:MPParser.Continue_stContext):
-        return Continue()
+        return [Continue()]
     def visitReturn_st(self, ctx:MPParser.Return_stContext):
         if ctx.expression():
-            return Return(self.visit(ctx.expression()))
-        else: return Return()
+            return [Return(self.visit(ctx.expression()))]
+        else: return [Return()]
     
     def visitCall_st(self, ctx:MPParser.Call_stContext):
-        return CallExpr(Id(ctx.ID().getText()),self.visit(ctx.listOfExp()))
-    
+        return [CallExpr(Id(ctx.ID().getText()),self.visit(ctx.listOfExp()))]
+    def visitWith_st(self, ctx:MPParser.With_stContext):
+        listOfType = ctx.listOfType()
+        if type(listOfType) is not list:
+            listOfType = list(listOfType)
+        listOfVarDecl = []
+        for x in listOfType:
+            listid, types = self.visit(x)
+            for id in listid:
+                listOfVarDecl.append(VarDecl(Id(id),types))
+           
+        return [With(listOfVarDecl,self.visit(ctx.statement()))]
     #################################
     def visitFull_call_st(self, ctx:MPParser.Full_call_stContext):
         temp = self.visit(ctx.call_st())
-        return CallStmt(temp.method(),temp.param())
+        return [CallStmt(temp[0].method,temp[0].param)]
     def visitListOfExp(self, ctx:MPParser.ListOfExpContext):
         listOfExp = []
         if not ctx.expression():
@@ -262,9 +256,9 @@ class ASTGeneration(MPVisitor):
         return listOfExp
     
     def visitIf_st(self, ctx:MPParser.If_stContext):
-        return If(self.visit(ctx.expression())
-            ,self.visit(ctx.statement(0)) if type(ctx.statement()) is list else self.visit(ctx.statement(0))
-            ,self.visit(ctx.statement(1)) if type(ctx.statement()) is list else [])
+        return [If(self.visit(ctx.expression())
+            ,self.visit(ctx.statement(0)) 
+            ,self.visit(ctx.statement(1)) if ctx.ELSE() else [])]
         
     def visitFor_st(self, ctx:MPParser.For_stContext):
         id = Id(ctx.ID().getText())
@@ -272,9 +266,9 @@ class ASTGeneration(MPVisitor):
         expr2 = self.visit(ctx.expression(1))
         loop = self.visit(ctx.statement())
         up = True if ctx.TO() else False 
-        return For(id,expr1,expr2,up,loop)
+        return [For(id,expr1,expr2,up,loop)]
 
-        
+
 
     
 

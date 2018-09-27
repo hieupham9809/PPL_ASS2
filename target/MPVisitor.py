@@ -174,5 +174,10 @@ class MPVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by MPParser#arrayindex.
+    def visitArrayindex(self, ctx:MPParser.ArrayindexContext):
+        return self.visitChildren(ctx)
+
+
 
 del MPParser

@@ -1,0 +1,10 @@
+
+            procedure foo();
+            begin
+                WHILE 1 < 2 do 
+                begin
+                    foo();
+                    bar();
+                end
+            end
+            

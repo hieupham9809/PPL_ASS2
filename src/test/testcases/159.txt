@@ -1,0 +1,4 @@
+for j:=m+1 doWnTO 100 do beGin
+                            s := s + 1;
+                            if(a=1) then s:=s-1;
+                        eND

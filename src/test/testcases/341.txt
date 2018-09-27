@@ -1,0 +1,9 @@
+
+            procedure foo();
+            begin
+                WHILE FALSE do 
+                begin
+                    bar();
+                end
+            end
+            

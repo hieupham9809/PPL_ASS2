@@ -1,0 +1,6 @@
+
+            procedure _();
+            begin
+                foo := 1 * -2e09 div 3;
+            end
+            

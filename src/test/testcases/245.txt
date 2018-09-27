@@ -1,0 +1,11 @@
+
+        function add(x, y: real): real;
+        
+        begin
+        if a < b then
+        begin 
+            a := 1;
+            b = foo(a); 
+        end
+        end
+        

@@ -1,0 +1,6 @@
+function IF_statement(c: integer): real ;
+                   var y,z:real ;
+                   BEGIN
+                    if(a>=1) then a:=1 ;
+                    if a=1 then return;
+                   END

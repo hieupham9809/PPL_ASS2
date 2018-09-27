@@ -1,0 +1,5 @@
+
+            procedure _1(A:INTEGER);
+            begin
+            end
+            

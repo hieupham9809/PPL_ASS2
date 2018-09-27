@@ -1,0 +1,6 @@
+function foo(c: real; d: integer): integer;
+                   BEGIN
+                    c := d;
+                    return c;
+                    foo(foo());
+                   END

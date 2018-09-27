@@ -1,0 +1,5 @@
+
+            FUNCTION _1(A:INTEGER) : ARRAY [0 .. 10] of sTrInG;
+            begin
+            end
+            

@@ -1,0 +1,8 @@
+
+                Procedure test(A: Integer; k, X:Integer);
+                Var i :Integer;
+                BEgin
+                 For i:=N downto k+ 1 do
+                  
+                EnD
+                

@@ -1,0 +1,6 @@
+proCEDURE ASSIGN_with_wrong_LHS(c: real) ;
+                   var y,z: real ;
+                   BEGIN
+                    2 := 1;
+                    c := a[0] ;
+                   END

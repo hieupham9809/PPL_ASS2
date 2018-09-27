@@ -1,0 +1,11 @@
+
+        procedure swap() ;
+        var a: array[0 .. m-1] of integer;
+            i,j,temp: integer;
+        beGin
+        { 
+            if then else
+        }
+        function("hello");
+        eND
+        

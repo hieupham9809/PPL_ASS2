@@ -1,0 +1,8 @@
+
+            procedure _();
+            begin
+
+                //this is an empty compound statement
+
+            end
+            

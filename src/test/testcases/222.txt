@@ -1,0 +1,8 @@
+pROCEDURE foo(c: real) ;
+                   var x:real ;
+                   BEGIN
+                    whILe(a=1) do beGin
+                        if(a=1) then x:=1;
+                        foo();
+                    end
+                   END

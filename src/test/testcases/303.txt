@@ -1,1 +1,7 @@
-var a,b,c: integer;
+
+        function foo ():BOOLEAN; 
+        var x,y: real; a,b,c: INTEGER;
+        begin
+            doSomething(0);
+        end
+        

@@ -1,0 +1,6 @@
+FUNCTION ASSIGN_with_index_express_of_FUNCCALL(c: integer): integer ;
+                   var x,y: integer;
+                   BEGIN
+                    a[m+n] := a[m+1] := foo()[m*2] := a[2 div a] := (a>=m)
+                    and then (b<=n);
+                   END

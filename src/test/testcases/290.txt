@@ -1,0 +1,10 @@
+procedure foo(a,b:integer; c:real);
+        var x,y: real;
+            z: array[2 .. 3] of integer;
+        begin 
+        x := y + 1;
+        x := z[2];
+        foo(x);
+        foo(2)[3+x] := a[b[2]] +3;
+        return foo(x);
+        end

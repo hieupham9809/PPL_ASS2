@@ -1,0 +1,9 @@
+pROCEDURE more_IF(c: real) ;
+                   var x:real ;
+
+                   BEGIN
+                    if(a>=1) then a:=2 ;
+                    if (1<=2) then beGIN x:=2 ; eND
+                    else foo(a+1,2);
+                    if (1) then return;
+                   END

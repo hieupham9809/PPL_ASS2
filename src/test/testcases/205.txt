@@ -1,0 +1,5 @@
+PROCeduRe ASSIGN_with_FUNCCALL() ;
+                  var x,y,z: real ;
+                  BEGIN
+                    a := "char";  b := func(1,a+1) ;
+                  END

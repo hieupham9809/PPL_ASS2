@@ -1,0 +1,9 @@
+
+            procedure foo();
+            begin
+                FOR x := a[0] TO a[2] do
+                begin
+                    PrintLn("Hello");
+                end
+            end
+            

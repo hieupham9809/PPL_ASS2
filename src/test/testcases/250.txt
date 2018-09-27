@@ -1,0 +1,11 @@
+
+        procedure swap() ;
+        var a: array[0 .. 1] of integer;
+            i,j,temp: integer;
+        beGin
+        if (x:=1) = 2 then
+            print("done");
+        else
+            exit(0);
+        END
+        

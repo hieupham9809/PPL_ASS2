@@ -1,0 +1,8 @@
+
+            VaR myVar : INTEGER ; foo   ,   bar: real;
+            function a(b:array [-1 .. 1] of BOOLEAN):boolean;
+            begin
+                doSomething();
+            end
+            vAr __ : STRING;
+            

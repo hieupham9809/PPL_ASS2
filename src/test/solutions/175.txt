@@ -1,0 +1,1 @@
+function,foo,(,c,:,real,),:,real,;,var,x,:,real,;,BEGIN,if,(,a,>,1,),then,a,:=,1,;,END,<EOF>

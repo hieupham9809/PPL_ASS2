@@ -1,0 +1,6 @@
+function foo(s: real): STRIng;
+                   BEGIN
+                    FOR i:=1 to m+10
+                    do
+                        s := s + 1;
+                   END

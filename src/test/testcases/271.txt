@@ -1,0 +1,9 @@
+function foo(c: real; d: integer): integer;
+                   BEGIN
+                    with a , b : integer ; c : array [1 .. 2] of real;  do begin
+                    d := c [a] + b ; 
+                    continue
+                    end
+                    return c;
+                    
+                   END

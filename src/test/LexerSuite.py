@@ -212,12 +212,15 @@ class LexerSuite(unittest.TestCase):
                     if(a>1) then a:=1 ;
                    END""","""function,foo,(,c,:,real,),:,real,;,var,x,:,real,;,BEGIN,if,(,a,>,1,),then,a,:=,1,;,END,<EOF>""",175))
     def test_complex_program_with_if_statement(self):
-        self.assertTrue(TestLexer.test("""function foo(b : array [1 .. 2] of integer ) : array [2 .. 3] of real;
-                                        var a : array [ 2 .. 3 ] of real;
-                                        begin
-                                        if () then return a; //CORRECT
-                                        else return b; //WRONG
-                                        end""","""function,foo,(,b,:,array,[,1,..,2,],of,integer,),:,array,[,2,..,3,],of,real,;,var,a,:,array,[,2,..,3,],of,real,;,begin,if,(,),then,return,a,;,else,return,b,;,end,<EOF>""",176))
+        self.assertTrue(TestLexer.test("""
+            procedure foo();
+            begin
+                while trUE do 
+                begin
+                    bar();
+                end
+            end
+        ""","""function,foo,(,b,:,array,[,1,..,2,],of,integer,),:,array,[,2,..,3,],of,real,;,var,a,:,array,[,2,..,3,],of,real,;,begin,if,(,),then,return,a,;,else,return,b,;,end,<EOF>""",176))
     def test_keyword_no_space_1(self):
         self.assertTrue(TestLexer.test("thelineisnotBREAKANDnospace","thelineisnotBREAKANDnospace,<EOF>",177)) #is ID
     def test_keyword_no_space_2(self):
