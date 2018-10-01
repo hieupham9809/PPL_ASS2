@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(foo),[],VoidType(),[],[If(IntLiteral(1),[If(IntLiteral(2),[If(IntLiteral(3),[CallStmt(Id(bar),[])],[CallStmt(Id(print),[StringLiteral(This is the \'else\' of if 3)])])],[])],[])])])
+Program([FuncDecl(Id(main),[],VoidType(),[],[If(BinaryOp(=,Id(a),Id(b)),[If(BinaryOp(=,Id(c),Id(d)),[AssignStmt(Id(e),Id(f))],[AssignStmt(Id(i),IntLiteral(1))])],[AssignStmt(Id(x),IntLiteral(2))])])])

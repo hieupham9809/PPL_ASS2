@@ -1,0 +1,4 @@
+
+        procedure foo(a,b:integer; c:real);
+        begin
+        if (b>=a) and (b>=c) then max:=b; end

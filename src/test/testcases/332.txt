@@ -1,3 +1,10 @@
 
-            VaR myVar : INTEGER ; foo: real;
-            
+                procedure test_mix_if_while() ;
+                begin
+	               if a=b then if c=d then while (d=e) do
+                   beGin
+                        if (1) then print("OK");
+                   eND
+               else c := 1;
+                end
+                

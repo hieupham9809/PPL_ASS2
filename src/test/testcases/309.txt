@@ -1,12 +1,8 @@
-
-        function foo ():BOOLEAN; 
-        begin
-            if a = 9 then
-            begin
-                x := y := .5e3;
-                bar(TrUe AND tHeN false);
-            end
-            else
-                executeElseStatement(1,"2",a);
-        end
-        
+proCeduRE foo(m, n: integer; c: real) ;
+                  var x,y,z: real ;
+                  BEGIN
+                    m := 12;
+                    n := c[2];
+                    z := n;
+                    m := z;
+                  END

@@ -1,9 +1,10 @@
 
-            procedure foo();
-            begin
-                FOR x := -   1 TO 1[2] do
-                begin
-                    PrintLn("Hello");
-                end
-            end
-            
+                Var name: String;
+                Procedure Main();
+                Begin
+	               (*this is line*)
+	               writeln();//this is new line}
+	               writeln(name);
+	               readln();
+                End
+                

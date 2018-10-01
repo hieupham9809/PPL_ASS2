@@ -1,13 +1,16 @@
 
-            procedure foo();
-            begin
-                if 1 then
-                    if 2 then
-                    begin
-                        if 3 then
-                            bar();
-                    end
-                else
-                    print("This is the \'else\' of if 2");
-            end
-            
+                procedure swap() ;
+                var a: array[0 .. 1] of integer;
+                 i,j,temp: integer;
+                beGin
+                    for i := 0 to n do
+                        for j:= i+1 to n-1 do
+                            if(a[i]>a[j]) then
+                            beGin
+                            temp := a[i];
+                            a[i] := a[j];
+                            a[j] := temp;
+                            eND
+                    print(a);
+                eND
+                

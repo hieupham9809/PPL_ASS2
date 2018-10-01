@@ -1,1 +1,1 @@
-Program([VarDecl(Id(myVar),IntType),VarDecl(Id(foo),FloatType)])
+Program([FuncDecl(Id(test_mix_if_while),[],VoidType(),[],[If(BinaryOp(=,Id(a),Id(b)),[If(BinaryOp(=,Id(c),Id(d)),[While(BinaryOp(=,Id(d),Id(e)),[If(IntLiteral(1),[CallStmt(Id(print),[StringLiteral(OK)])],[])])],[AssignStmt(Id(c),IntLiteral(1))])],[])])])

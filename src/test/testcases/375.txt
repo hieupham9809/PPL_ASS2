@@ -1,0 +1,5 @@
+
+procedure foo();
+begin
+    with i,j,k: integer; do begin end
+end

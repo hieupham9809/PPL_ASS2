@@ -1,10 +1,3 @@
-
-        function foo ():BOOLEAN; 
-        begin
-            if a = 9 then
-            begin
-                x := y := .5e3;
-                bar(TrUe AND tHeN false);
-            end
+function foo ():INTEGER; begin
+            for i := 1 to 5 do a:=b
         end
-        

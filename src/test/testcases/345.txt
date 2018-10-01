@@ -1,9 +1,11 @@
 
-            procedure foo();
-            begin
-                FOR i := 100 downto 1+1 Do
-                begin
-                    {Do something here}
-                end
-            end
-            
+                procedure main() ;
+                beGin
+                 a[b[2]] := 10;
+                 foo();
+                 if a=b then if c = d then e := f;
+                 else i := 1;
+                 else x := 2 ;
+                 return ;
+                eND
+                

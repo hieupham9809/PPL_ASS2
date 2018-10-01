@@ -1,0 +1,46 @@
+
+procedure foo();
+var a: real;
+begin
+    with 
+        a: integer;
+        b, c: array [0 .. 15] of Boolean;
+        x, y, z: real;
+    do begin
+        a := x := y := 3;
+    end
+end
+
+procedure foo();
+var a: real;
+begin
+    if a = 1 then begin
+        if b > 3 then c := 5;
+        else d := 1;
+
+        if e < 4 then ok();
+    end else begin
+        if h > 5 then nty(); else lyo();
+        g := 5;
+    end
+end
+
+function foo(): String;
+begin
+    ok(a);
+end
+
+var a:integer;
+var b:string;
+    f,g: real;
+var t,h: string;
+    p,q: boolean;
+
+procedure foo();
+begin
+    if True then begin
+        hic();
+        break;
+        continue;
+    end else return oh();
+end

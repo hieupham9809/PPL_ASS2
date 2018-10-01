@@ -1,15 +1,11 @@
 
-            procedure foo();
-            begin
-                if 1 then
-                begin
-                    if 2 then
-                    begin
-                        if 3 then
-                            bar();
-                    end
-                end
-                else
-                    print("This is the \'else\' of if 1");
-            end
-            
+                Function CountX(A:array[0 .. 100] of integer; N,X : Integer) : Integer;
+                Var i , Count : Integer;
+                Begin
+                 Count := 0;
+                 For i:=1 to N do
+                  If ( A[i] = X ) then
+                   Count := Count + 1;
+                 return Count;
+                End
+                

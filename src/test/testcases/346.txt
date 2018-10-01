@@ -1,9 +1,13 @@
 
-            procedure foo();
-            begin
-                FOR x := a[0] TO a[2] do
+                procedure test() ;
                 begin
-                    PrintLn("Hello");
+	               if a=b then
+	               begin
+		                 b := c ;
+		                 if(e <> f) then foo(a,c) ;
+                    if a=b then if c=d then while (d=e) do
+                   beGin
+                   eND
+	               end
                 end
-            end
-            
+                

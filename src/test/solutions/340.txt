@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(foo),[],VoidType(),[],[While(BooleanLiteral(True),[CallStmt(Id(bar),[])])])])
+Program([FuncDecl(Id(replace),[VarDecl(Id(A),ArrayType(0,100,IntType)),VarDecl(Id(N),IntType),VarDecl(Id(x),IntType),VarDecl(Id(y),IntType)],VoidType(),[VarDecl(Id(i),IntType)],[For(Id(i)IntLiteral(0),Id(N),True,[If(BinaryOp(=,ArrayCell(Id(A),Id(i)),Id(x)),[AssignStmt(ArrayCell(Id(A),Id(i)),Id(y))],[])]),Return(None)])])

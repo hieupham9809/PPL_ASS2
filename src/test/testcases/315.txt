@@ -1,6 +1,11 @@
+pROCEDURE nested_IF_with_COBOUND(c: string) ;
+                   var x:real ; z: integer;
 
-            function abc(): integer;
-            begin
-            	a:=b:=c:=3;
-            end
-            
+                   BEGIN
+                    if(a>=1) then beGin
+                        a:=1 ;
+                        if(2=1) then
+                        a:= b[1];
+                        else b:=a[1]:= 1;
+                    ENd
+                    END

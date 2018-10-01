@@ -1,0 +1,5 @@
+
+procedure foo();
+begin
+    with i: integer; do ok();
+end

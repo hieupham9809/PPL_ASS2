@@ -1,0 +1,5 @@
+
+procedure foo();
+begin
+    a := true or trUE Or falSE oR TRUE OR FalSE;
+end

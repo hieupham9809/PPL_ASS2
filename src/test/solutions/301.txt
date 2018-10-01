@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(foo),[],FloatType,[],[CallStmt(Id(putIntLn),[IntLiteral(4)])])])
+Program([FuncDecl(Id(foo),[],IntType,[],[CallStmt(Id(putIntLn),[IntLiteral(4)])])])

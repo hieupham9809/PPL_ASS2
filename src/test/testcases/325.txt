@@ -1,5 +1,4 @@
-
-            PROCEDURE _1(A,__b,c_2:INTEGER);
-            begin
-            end
-            
+pROCEDURE foo(c: real);
+                   BEGIN
+                    while (1) do RETURN ;
+                   END

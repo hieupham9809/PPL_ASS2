@@ -1,9 +1,5 @@
-
-            procedure foo();
-            begin
-                WHILE 1 < 2 do wHiLe 0. do
-                    begin
-                        While True dO nothing();
-                    end
-            end
-            
+ Function Min(N:Integer) :Integer;
+                Var x,y:Integer;
+                Begin
+                    if x <= y then i := x; else i := y;
+                End

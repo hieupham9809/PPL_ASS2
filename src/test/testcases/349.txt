@@ -1,15 +1,12 @@
 
-            procedure foo();
-            begin
-                FOR x := -   1 TO 1[2] do
-                begin
-                    for y := 0 downto -10e1
-                    do
-                        begin
-                            a();
-                            for _ := 1.0 to 2.0 do
-                                x := nOT arr[tRuE];
-                        end
+                function fibonacy(x: integer): integer;
+                var f1,f2: integer;
+                temp: integer;
+                Begin
+                 if x<=2 then
+                  return 1;
+                 else
+                  temp := fibonacy(x-2)+ fibonacy(x-1);
+                  return temp;
                 end
-            end
-            
+                

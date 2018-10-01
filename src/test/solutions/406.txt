@@ -1,0 +1,1 @@
+Program([FuncDecl(Id(foo),[],VoidType(),[],[AssignStmt(Id(a),BinaryOp(+,BinaryOp(+,BinaryOp(+,BinaryOp(+,FloatLiteral(12.05),FloatLiteral(1e-05)),FloatLiteral(1.5e-06)),FloatLiteral(0.5)),FloatLiteral(2e+21)))])])

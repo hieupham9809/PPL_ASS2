@@ -1,0 +1,9 @@
+
+procedure foo();
+begin{
+    a := 2e10;
+    a := 3e100;
+    a := 4e1000;
+    a := 5e10000;
+    a := 6e100000;}
+end

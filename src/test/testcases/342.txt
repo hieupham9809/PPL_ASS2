@@ -1,10 +1,10 @@
 
-            procedure foo();
-            begin
-                WHILE 1 < 2 do 
-                begin
-                    foo();
-                    bar();
-                end
-            end
-            
+                Var R,S,P:real;
+                pROCEDURE Scalc() ;
+                Begin
+                    Read(R);
+                    S := 3.14 * R * R;
+                    P := 2 * 3.14 * R;
+                    return;
+                End
+                

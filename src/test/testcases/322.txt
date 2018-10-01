@@ -1,5 +1,7 @@
-
-            FUNCTION _1(A,__b,c_2:INTEGER) : ARRAY [0 .. 10] of sTrInG;
-            begin
-            end
-            
+pROCEDURE foo(c: real);
+                   BEGIN
+                    FOR i:=1 to m+10 do beGin
+                        print(i);
+                        brEaK;
+                    end
+                   END

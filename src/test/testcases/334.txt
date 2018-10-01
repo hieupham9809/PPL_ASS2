@@ -1,6 +1,6 @@
 
-            procedure foo();
-            begin
-                a[1] := b[c] := 3.0E-5;
-            end
-            
+                proceDure Hello(b:integer);
+                begin
+                    a := b := b + c;
+                end
+                

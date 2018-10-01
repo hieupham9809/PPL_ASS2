@@ -1,0 +1,1 @@
+Program([FuncDecl(Id(foo),[],VoidType(),[],[AssignStmt(Id(b),IntLiteral(1)),AssignStmt(Id(a),Id(b)),CallStmt(Id(foo),[]),Return(None),Break,Return(Some(CallExpr(Id(OK),[]))),Return(Some(Id(OK)))])])

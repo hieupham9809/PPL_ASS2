@@ -1,8 +1,12 @@
-
-            procedure _();
-            begin
-
-                //this is an empty compound statement
-
-            end
-            
+pROCEDURE WITH_with_CALL_statement(c: real) ;
+                   BEGIN
+                    with a ,b : integer ; c: array [1 .. 2] of real ; do
+                    begin
+                    d := c [a] + b ;
+                    foo();WITH_with_CALL_statement(a,b,c);
+                    with a , b : integer ; do
+                    begin
+                        WITH_with_CALL_statement(a,b,"abc");
+                    end
+                    end
+                   END

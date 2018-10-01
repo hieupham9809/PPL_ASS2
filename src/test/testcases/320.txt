@@ -1,5 +1,7 @@
-
-            FUNCTION _1() : array [10 .. -10] of sTrInG;
-            begin
-            end
-            
+function statement_FOR(c: real): STRIng;
+                   BEGIN
+                    FOR i:=1 to m+10
+                    do
+                        s := s + 1;
+                        m := s;
+                   END

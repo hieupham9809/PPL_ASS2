@@ -1,11 +1,11 @@
 
-            procedure foo();
-            begin
-                WHILE 1 < 2 do 
-                begin
-                    wHiLe 0. do
-                        something();
-                        (*This is a comment*)
-                end
-            end
-            
+                Var R,S,P:real;
+                pROCEDURE Scalc() ;
+                Begin
+                    Read(R);
+                    S := 3.14 * R * R;
+                    P := 2 * 3.14 * R;
+                    Mul := (S*P) / (S+P);
+                    return Mul;
+                End
+                

@@ -1,0 +1,5 @@
+
+procedure foo();
+begin
+    a := 12.05  + 1e-5  +    1.5e-6 +  0.0005e3 +  2e21;
+end

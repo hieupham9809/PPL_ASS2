@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(_foo123),[],VoidType(),[],[With([VarDecl(Id(a),IntType),VarDecl(Id(b),IntType),VarDecl(Id(c),StringType)],[AssignStmt(Id(d),BinaryOp(+,ArrayCell(Id(c),Id(a)),Id(b)))])])])
+Program([FuncDecl(Id(IF_ELSE_nested),[VarDecl(Id(c),IntType)],VoidType(),[VarDecl(Id(y),FloatType)],[If(BinaryOp(>=,Id(a),IntLiteral(1)),[AssignStmt(Id(a),IntLiteral(1))],[If(BinaryOp(<>,BinaryOp(<=,IntLiteral(1),IntLiteral(2)),BinaryOp(<=,IntLiteral(2),IntLiteral(3))),[AssignStmt(Id(x),IntLiteral(2))],[CallStmt(Id(foo),[BinaryOp(+,Id(a),IntLiteral(1)),IntLiteral(1)])])])])])

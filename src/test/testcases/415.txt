@@ -1,0 +1,5 @@
+
+procedure foo();
+begin
+    a := "      abc         \n \t \b \\         ;;   cltq ";
+end

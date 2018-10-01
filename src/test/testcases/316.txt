@@ -1,6 +1,5 @@
-
-            procedure abc();
-            begin
-            	a[1][2][3] := -.5e3;
-            end
-            
+pROCEDURE WITHstm(c: real) ;
+                   BEGIN
+                    with a , b : integer ; c : array [2 .. 4] of real ; dO
+                    d := c[a] + b ;
+                   END

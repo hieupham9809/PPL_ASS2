@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(foo),[],VoidType(),[],[If(BinaryOp(=,Id(a),IntLiteral(0)),[If(BinaryOp(=,Id(b),Id(a)),[CallStmt(Id(bar),[])],[])],[])])])
+Program([VarDecl(Id(x),FloatType),VarDecl(Id(y),FloatType),FuncDecl(Id(add),[VarDecl(Id(x),FloatType),VarDecl(Id(y),FloatType)],FloatType,[],[Return(Some(BinaryOp(+,BinaryOp(+,Id(x),Id(y)),CallExpr(Id(random),[]))))])])

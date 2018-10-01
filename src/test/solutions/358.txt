@@ -1,0 +1,1 @@
+Program([FuncDecl(Id(nested_scope),[VarDecl(Id(N),IntType)],BoolType,[VarDecl(Id(Flag),BoolType),VarDecl(Id(i),IntType)],[Return(Some(Id(Flag)))])])

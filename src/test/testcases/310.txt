@@ -1,11 +1,6 @@
-
-        function foo ():BOOLEAN; 
-        var x,y: real; a,b,c: INTEGER;
-        begin
-            a := 0;
-            while (a < 10) AND (x <> 0.) do
-            begin 
-                a := a + 1;
-            end
-        end
-        
+PROCeduRe ASSIGN_with_FUNCCALL() ;
+                  var x,y,z: real ;
+                  BEGIN
+                    a := "char";  
+                    b := func(1,a+11) ;
+                  END

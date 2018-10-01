@@ -1,8 +1,16 @@
 
-            VaR myVar : INTEGER ; foo   ,   bar: real;
-            function a(b:array [-1 .. 1] of BOOLEAN):boolean;
-            begin
-                doSomething();
-            end
-            vAr __ : STRING;
-            
+                VAR i: real ;
+                FUNCTION funcmix(): integer ;
+                begin
+	               return 100;
+                end
+                procedure procmix() ;
+                var
+	               m: integer ;
+                begin
+	               m := f() ;  
+                   put(m);
+	               put(main);
+                end
+                var g: real ;
+                

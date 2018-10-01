@@ -1,5 +1,9 @@
-
-            FUNCTION _1(A:INTEGER) : ARRAY [0 .. 10] of sTrInG;
-            begin
-            end
-            
+PROCEDURE foo(c: real);
+                   BEGIN
+                    FOR i:=1 to m+10 do beGin
+                        while i>1 do
+                            FOR i:=m+1 doWnTO 10 do
+                                while j>1 do x:=foo(10);
+                                print(j);
+                    End
+                   END

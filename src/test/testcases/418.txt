@@ -1,0 +1,14 @@
+
+procedure foo();
+begin
+    a := b := 1;
+    begin
+        foo();
+        return;
+        break;
+            begin
+                return OK();
+                return OK;
+            end
+    end
+end

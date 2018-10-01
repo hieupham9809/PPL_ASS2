@@ -1,0 +1,7 @@
+procedure foo(a,b:integer; c:real);
+        var x,y: real;
+            z: array[2 .. 3] of integer;
+        begin 
+        if (5>6) then x := y; else y := x := 1;
+        
+        end

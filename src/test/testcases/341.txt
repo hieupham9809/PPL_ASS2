@@ -1,9 +1,10 @@
 
-            procedure foo();
-            begin
-                WHILE FALSE do 
+                function calc(i : integer): boolean;
+                var k : integer;
                 begin
-                    bar();
+                if copy(s,i-2*k+1,k) = copy(s,i-k+1,k) then
+                   begin
+                    exit();
+                   end
                 end
-            end
-            
+                

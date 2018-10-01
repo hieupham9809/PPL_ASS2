@@ -1,5 +1,7 @@
-
-            FUNCTION _1(A,__b,c_2:INTEGER; x,y,z:array[1 .. 3] of BOOLEAN) : ARRAY [0 .. 10] of sTrInG;
-            begin
-            end
-            
+pROCEDURE foo(c: real);
+                   BEGIN
+                    FOR i:=1 to m+10 do beGin
+                        brEaK;
+                    end
+                    break;
+                   END

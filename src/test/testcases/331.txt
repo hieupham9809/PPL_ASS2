@@ -1,7 +1,10 @@
 
-            procedure _1() ;
-            begin
-                foo("abc");
-                bar("xy\nz",1.5e0);
-            end
-            
+                procedure test1() ;
+                begin
+	               if a=b then
+	               bEGin
+		                 b := c := 6;
+		                 if(e <> f) then foo(a,c); else a := b := c ;
+	               end
+                end
+                

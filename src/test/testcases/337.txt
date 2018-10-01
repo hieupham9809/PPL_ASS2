@@ -1,11 +1,9 @@
 
-            procedure foo();
-            begin
-                if 1 then
-                    if 2 then
-                        if 3 then
-                            bar();
-                else
-                    print("This is the \'else\' of if 3");
-            end
-            
+                PROCEDURE main() ;
+                beGin
+                 if a=b then 
+                 if c = d then e := f;
+                 else i := 1;
+                 else x := 2 ;
+                eND
+                

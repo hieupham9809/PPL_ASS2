@@ -1,7 +1,3 @@
-
-        function foo ():BOOLEAN; 
-        var x,y: real; a,b,c: INTEGER;
-        begin
-            x := 2;
+function foo ():INTEGER; begin
+            a := b:= 3;
         end
-        

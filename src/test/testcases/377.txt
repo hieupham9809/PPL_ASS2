@@ -1,0 +1,13 @@
+
+procedure foo();
+begin
+    with i: real;
+    do begin
+        ok();
+        a := 4;
+        return;
+        break;
+        continue;
+        return hoho;
+    end
+end

@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(_1),[VarDecl(Id(A),IntType),VarDecl(Id(__b),IntType),VarDecl(Id(c_2),IntType)],ArrayType(0,10,StringType),[VarDecl(Id(x_),FloatType),VarDecl(Id(_y_),FloatType),VarDecl(Id(z),FloatType),VarDecl(Id(m),IntType),VarDecl(Id(n),IntType)],[])])
+Program([FuncDecl(Id(foo),[VarDecl(Id(c),FloatType)],IntType,[],[AssignStmt(Id(y),CallExpr(Id(foo),[IntLiteral(3),CallExpr(Id(foo),[CallExpr(Id(foo1),[CallExpr(Id(foo),[IntLiteral(2),BinaryOp(+,Id(a),IntLiteral(1))])])])])),Return(Some(CallExpr(Id(func),[CallExpr(Id(a),[IntLiteral(1),IntLiteral(2)])])))])])

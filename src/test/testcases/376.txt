@@ -1,0 +1,9 @@
+
+procedure foo();
+begin
+    with i,j,k: integer; 
+        g: String;
+        h,p,t: BooLean;
+    do begin
+    end
+end

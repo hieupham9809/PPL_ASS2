@@ -1,8 +1,9 @@
 
-            procedure foo();
-            begin
-                if a = 0 then
-                    if b = a then
-                        bar();
-            end
-            
+        var x, y: real;
+
+        function add(x, y: real): real;
+        
+        begin
+            return x + y + random();
+        end
+        

@@ -1,5 +1,4 @@
-
-            procedure _1(A:INTEGER);
-            begin
-            end
-            
+PROCEDURE foo(c: real);
+                   BEGIN
+                    while (1) do ContinuE ;
+                   END
