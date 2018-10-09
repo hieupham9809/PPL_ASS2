@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(foo),[VarDecl(Id(m),IntType),VarDecl(Id(n),IntType),VarDecl(Id(c),FloatType)],VoidType(),[VarDecl(Id(x),FloatType),VarDecl(Id(y),FloatType),VarDecl(Id(z),FloatType)],[AssignStmt(Id(m),IntLiteral(12)),AssignStmt(Id(n),ArrayCell(Id(c),IntLiteral(2))),AssignStmt(Id(z),Id(n)),AssignStmt(Id(m),Id(z))])])
+Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(Id(c),Id(d)),AssignStmt(Id(b),Id(c)),AssignStmt(Id(a),Id(b))])])

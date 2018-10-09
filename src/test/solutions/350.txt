@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(foo),[VarDecl(Id(c),FloatType),VarDecl(Id(d),IntType)],IntType,[],[AssignStmt(Id(c),Id(d)),Return(Some(Id(c))),CallStmt(Id(foo),[CallExpr(Id(foo),[])])])])
+Program([FuncDecl(Id(bachkhoa),[],VoidType,[],[AssignStmt(Id(x),BinaryOp(+,Id(abc),IntLiteral(4)))])])

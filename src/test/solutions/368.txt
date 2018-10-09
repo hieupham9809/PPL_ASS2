@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(foo),[],VoidType(),[],[While(BooleanLiteral(True),[CallStmt(Id(gogo),[])])])])
+Program([FuncDecl(Id(hgjd),[],VoidType,[],[AssignStmt(Id(x),BinaryOp(<,Id(a),Id(b)))])])

@@ -1,11 +1,8 @@
-pROCEDURE nested_IF_with_COBOUND(c: string) ;
-                   var x:real ; z: integer;
-
-                   BEGIN
-                    if(a>=1) then beGin
-                        a:=1 ;
-                        if(2=1) then
-                        a:= b[1];
-                        else b:=a[1]:= 1;
-                    ENd
-                    END
+procedure a(); 
+        begin 
+            r:=d;
+            d:=d;
+            d:=r;
+            r:=d:=r[2]:=r(r[r]+d)[2]:=d:=r+4;
+            if r then r();
+        end

@@ -1,5 +1,16 @@
-Procedure testContinue(c: real);
-                   BEgin
-                    while (1) do coNtInUe ;
-                   EnD
-                   
+
+        var a,b,c:integer;d,e:integer;
+        procedure a();
+        begin
+            a();
+            w:=w;
+            begin
+                d:=d;
+                opw:=w();
+                wqw:=d()[2];
+                if a then if c then d();
+            end
+            w();
+        end
+        var c,w:real;d:string;q:array[-2 .. 2]of integer;
+        

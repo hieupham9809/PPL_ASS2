@@ -1,9 +1,1 @@
-
-        var x, y: real;
-
-        function add(x, y: real): real;
-        
-        begin
-            return x + y + random();
-        end
-        
+function a():integer; begin begin begin begin end end begin end end end

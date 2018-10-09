@@ -1,7 +1,6 @@
 
-procedure foo();
-var a: real;
-
-begin
-    a := (((5 <> 6) < (6 = 5)) >= (4 + 5 > 1)) <= 1 ;
-end
+                procedure uux();
+                begin
+                    m:=m+(3-4)*2;
+                end
+                

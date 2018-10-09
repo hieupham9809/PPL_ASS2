@@ -1,5 +1,6 @@
 
-procedure foo();
-begin
-    while True do gogo();
-end
+                procedure hgjd();
+                begin
+                    x:= a < b;
+                end
+                

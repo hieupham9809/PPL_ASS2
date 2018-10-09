@@ -1,882 +1,993 @@
+# Trong file AST.py chinh sua 1 so diem:
+#   1. def __str__ trong class VoidType: xoa ()
+#   2. def __str__ trong class For: them , vao giua ""
+#   3. def ArrayCell: sua thanh class ArrayCell
+#
+
 import unittest
 from TestUtils import TestAST
 from AST import *
 
 class ASTGenSuite(unittest.TestCase):
     def test_simple_program(self):
-        """Simple program: int main() {} """
-        input = """procedure main(); begin end"""
-        expect = str(Program([FuncDecl(Id(r'main'),[],[],[],VoidType())]))
+        input = """procedure main();begin end"""
+        expect = str(Program([FuncDecl(Id("main"),[],[],[],VoidType())]))
         self.assertTrue(TestAST.test(input,expect,300))
 
-    def test_simple_function(self):
-        """More complex program"""
-        input = """function foo ():INTEGER; begin
-            putIntLn(4);
-        end"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[],[],[CallStmt(Id(r'putIntLn'),[IntLiteral(4)])],IntType())]))
+    def test_simple_error_program(self):
+        input = """
+        procedure a();
+        begin
+            a();
+        end
+        """
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[CallStmt(Id(a),[])])])"
         self.assertTrue(TestAST.test(input,expect,301))
     
-    def test_call_without_parameter(self):
-        """More complex program"""
-        input = """procedure main (); begin
-            getIntLn();
+    def test_ambiguous_if(self):
+        """Test ambiguous if"""
+        input = """
+        procedure abc();
+        begin
+            if a=4 then
+                if a=2 then c:=7;
+                else w:=3;
         end
-        function foo ():INTEGER; begin
-            putIntLn(4);
-        end"""
-        expect = str(Program([FuncDecl(Id(r'main'),[],[],[CallStmt(Id(r'getIntLn'),[])],VoidType()),FuncDecl(Id(r'foo'),[],[],[CallStmt(Id(r'putIntLn'),[IntLiteral(4)])],IntType())]))
+        """
+        expect = "Program([FuncDecl(Id(abc),[],VoidType,[],[If(BinaryOp(=,Id(a),IntLiteral(4)),[If(BinaryOp(=,Id(a),IntLiteral(2)),[AssignStmt(Id(c),IntLiteral(7))],[AssignStmt(Id(w),IntLiteral(3))])],[])])])"
         self.assertTrue(TestAST.test(input,expect,302))
 
-    def test_varDec(self):
-        """More complex program"""
-        input = """var a,b,c: integer;"""
-        expect = str(Program([VarDecl(Id(r'a'),IntType()),VarDecl(Id(r'b'),IntType()),VarDecl(Id(r'c'),IntType())]))
+    def test_var(self):
+        """Test var"""
+        input = """var a:integer;"""
+        expect = "Program([VarDecl(Id(a),IntType)])"
         self.assertTrue(TestAST.test(input,expect,303))
-    def test_Assign(self):
-        input = """function foo ():INTEGER; begin
-            a := b:= 3;
-        end"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[],[],[Assign(Id(r'b'),IntLiteral(3)),Assign(Id(r'a'),Id(r'b'))],IntType())]))
+
+    def test_multi_var(self):
+        input = """var a,b,c:integer;d,e:real;"""
+        expect = "Program([VarDecl(Id(a),IntType),VarDecl(Id(b),IntType),VarDecl(Id(c),IntType),VarDecl(Id(d),FloatType),VarDecl(Id(e),FloatType)])"
         self.assertTrue(TestAST.test(input,expect,304))
-    def test_Assign_with_BinaryOp(self):
-        input = """function foo ():INTEGER; begin
-            a := b:= 3 = 4;
-        end"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[],[],[Assign(Id(r'b'),BinaryOp(r'=',IntLiteral(3),IntLiteral(4))),Assign(Id(r'a'),Id(r'b'))],IntType())]))
+
+    def test_double_var(self):
+        input = """var a:integer;var b:real;"""
+        expect = "Program([VarDecl(Id(a),IntType),VarDecl(Id(b),FloatType)])"
         self.assertTrue(TestAST.test(input,expect,305))
-    def test_If(self):
-        input = """function foo ():INTEGER; begin
-            if 5 > 3 then a := b; else b:=c;
-        end"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[],[],[If(BinaryOp(r'>',IntLiteral(5),IntLiteral(3)),[Assign(Id(r'a'),Id(r'b'))],[Assign(Id(r'b'),Id(r'c'))])],IntType())]))
+
+    def test_true_bool_lit(self):
+        input = """procedure a();begin a:=true;a:=True;a:=tRUE;a:=TrUe; end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(Id(a),BooleanLiteral(True)),AssignStmt(Id(a),BooleanLiteral(True)),AssignStmt(Id(a),BooleanLiteral(True)),AssignStmt(Id(a),BooleanLiteral(True))])])"
         self.assertTrue(TestAST.test(input,expect,306))
-    def test_For(self):
-        input = """function foo ():INTEGER; begin
-            for i := 1 to 5 do a:=b
-        end"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[],[],[For(Id(r'i'),IntLiteral(1),IntLiteral(5),True,[Assign(Id(r'a'),Id(r'b'))])],IntType())]))
+
+    def test_false_bool_lit(self):
+        input = """procedure a();begin a:=false;a:=False;a:=fALSE;a:=FaLSe; end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(Id(a),BooleanLiteral(False)),AssignStmt(Id(a),BooleanLiteral(False)),AssignStmt(Id(a),BooleanLiteral(False)),AssignStmt(Id(a),BooleanLiteral(False))])])"
         self.assertTrue(TestAST.test(input,expect,307))
-    def test_function_DECLARE_non_upcase(self):
-        input ="""
-            procedure foo();
+
+    def test_float_program(self):
+        input = """procedure a();begin a:=5.3;end """
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(Id(a),FloatLiteral(5.3))])])"
+        self.assertTrue(TestAST.test(input,expect,308))
+
+    def test_assign_operator(self):
+        input = """procedure a(); begin a:=b:=c:=d;end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(Id(c),Id(d)),AssignStmt(Id(b),Id(c)),AssignStmt(Id(a),Id(b))])])"
+        self.assertTrue(TestAST.test(input,expect,309))
+
+    def test_function(self):
+        input = """function try():integer;begin try();end"""
+        expect = "Program([FuncDecl(Id(try),[],IntType,[],[CallStmt(Id(try),[])])])"
+        self.assertTrue(TestAST.test(input,expect,310))
+
+    def test_a_little_bit_complex_program(self):
+        input = """
+            function TCefBrowserRefGetFrameIdentifiers(aFrameCount : InteGeR; aFrameIdentifierArray : string) : boolean;
+            var
+                i : Integer;
             begin
-                while trUE do 
+                Result := False;
+
+                if (aFrameCount > 0) then
                 begin
-                    bar();
-                end
+                    SetLength(aFrameIdentifierArray, aFrameCount);
+                    i := 0;
+                    while (i < aFrameCount) do
+                        begin
+                           aFrameIdentifierArray[i] := 0;
+                           inc(i);
+                        end
+
+            PCefBrowserget_frame_identifiers(PCefBrowser(FData), aFrameCount, aFrameIdentifierArray[0]);
+
+            Result := True;
+            end
+           if CustomExceptionHandler("TCefBrowserRef.GetFrameIdentifiers", e) then break;
             end
         """
-        expect = str(Program([FuncDecl(Id(r'foo'),[],[],[While(BooleanLiteral(True),[CallStmt(Id(r'bar'),[])])],VoidType())]))
-        self.assertTrue(TestAST.test(input,expect,308))
-    def test_statement_ASSIGN_single(self):
-        input = """proCeduRE foo(m, n: integer; c: real) ;
-                  var x,y,z: real ;
-                  BEGIN
-                    m := 12;
-                    n := c[2];
-                    z := n;
-                    m := z;
-                  END"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'm'),IntType()),VarDecl(Id(r'n'),IntType()),VarDecl(Id(r'c'),FloatType())],[VarDecl(Id(r'x'),FloatType()),VarDecl(Id(r'y'),FloatType()),VarDecl(Id(r'z'),FloatType())],[Assign(Id(r'm'),IntLiteral(12)),Assign(Id(r'n'),ArrayCell(Id(r'c'),IntLiteral(2))),Assign(Id(r'z'),Id(r'n')),Assign(Id(r'm'),Id(r'z'))],VoidType())]))
-        self.assertTrue(TestAST.test(input,expect,309))
-    def test_statement_ASSIGN_with_FUNCCALL(self):
-        """PROCeduRe ASSIGN_with_FUNCCALL() ;
-                  var x,y,z: real ;
-                  BEGIN
-                    a := "char";  b := func(1,a+1) ;
-                  END"""
-        input = """PROCeduRe ASSIGN_with_FUNCCALL() ;
-                  var x,y,z: real ;
-                  BEGIN
-                    a := "char";  
-                    b := func(1,a+11) ;
-                  END"""
-        expect = str(Program([FuncDecl(Id(r'ASSIGN_with_FUNCCALL'),[],[VarDecl(Id(r'x'),FloatType()),VarDecl(Id(r'y'),FloatType()),VarDecl(Id(r'z'),FloatType())],[Assign(Id(r'a'),StringLiteral(r'char')),Assign(Id(r'b'),CallExpr(Id(r'func'),[IntLiteral(1),BinaryOp(r'+',Id(r'a'),IntLiteral(11))]))],VoidType())]))
-        self.assertTrue(TestAST.test(input,expect,310))
-    def test_statement_ASSIGN_with_index_express_of_FUNCCALL(self):
-        """FUNCTION ASSIGN_with_index_express_of_FUNCCALL(c: integer): integer ;
-                   var x,y: integer;
-                   BEGIN
-                    a[m+n] := a[m+1] := foo()[m*2] := a[2 div a] := (a>=m)
-                    and then (b<=n);
-                   END"""
-        input = """FUNCTION ASSIGN_with_index_express_of_FUNCCALL(c: integer): integer ;
-                   var x,y: integer;
-                   BEGIN
-                    a[m+n] := a[m+1] := foo()[m*2] := a[2 div a] := (a>=m)
-                    and then (b<=n);
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'ASSIGN_with_index_express_of_FUNCCALL'),[VarDecl(Id(r'c'),IntType())],[VarDecl(Id(r'x'),IntType()),VarDecl(Id(r'y'),IntType())],[Assign(ArrayCell(Id(r'a'),BinaryOp(r'div',IntLiteral(2),Id(r'a'))),BinaryOp(r'andthen',BinaryOp(r'>=',Id(r'a'),Id(r'm')),BinaryOp(r'<=',Id(r'b'),Id(r'n')))),Assign(ArrayCell(CallExpr(Id(r'foo'),[]),BinaryOp(r'*',Id(r'm'),IntLiteral(2))),ArrayCell(Id(r'a'),BinaryOp(r'div',IntLiteral(2),Id(r'a')))),Assign(ArrayCell(Id(r'a'),BinaryOp(r'+',Id(r'm'),IntLiteral(1))),ArrayCell(CallExpr(Id(r'foo'),[]),BinaryOp(r'*',Id(r'm'),IntLiteral(2)))),Assign(ArrayCell(Id(r'a'),BinaryOp(r'+',Id(r'm'),Id(r'n'))),ArrayCell(Id(r'a'),BinaryOp(r'+',Id(r'm'),IntLiteral(1))))],IntType())]))
+        expect = "Program([FuncDecl(Id(TCefBrowserRefGetFrameIdentifiers),[VarDecl(Id(aFrameCount),IntType),VarDecl(Id(aFrameIdentifierArray),StringType)],BoolType,[VarDecl(Id(i),IntType)],[AssignStmt(Id(Result),BooleanLiteral(False)),If(BinaryOp(>,Id(aFrameCount),IntLiteral(0)),[CallStmt(Id(SetLength),[Id(aFrameIdentifierArray),Id(aFrameCount)]),AssignStmt(Id(i),IntLiteral(0)),While(BinaryOp(<,Id(i),Id(aFrameCount)),[AssignStmt(ArrayCell(Id(aFrameIdentifierArray),Id(i)),IntLiteral(0)),CallStmt(Id(inc),[Id(i)])]),CallStmt(Id(PCefBrowserget_frame_identifiers),[CallExpr(Id(PCefBrowser),[Id(FData)]),Id(aFrameCount),ArrayCell(Id(aFrameIdentifierArray),IntLiteral(0))]),AssignStmt(Id(Result),BooleanLiteral(True))],[]),If(CallExpr(Id(CustomExceptionHandler),[StringLiteral(TCefBrowserRef.GetFrameIdentifiers),Id(e)]),[Break],[])])])"
         self.assertTrue(TestAST.test(input,expect,311))
-    def test_statement_with_IF_statement(self):
-        input = """function IF_statement(c: integer): real ;
-                   var y,z:real ;
-                   BEGIN
-                    if(a>=1) then a:=1 ;
-                    if a=1 then return;
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'IF_statement'),[VarDecl(Id(r'c'),IntType())],[VarDecl(Id(r'y'),FloatType()),VarDecl(Id(r'z'),FloatType())],[If(BinaryOp(r'>=',Id(r'a'),IntLiteral(1)),[Assign(Id(r'a'),IntLiteral(1))],[]),If(BinaryOp(r'=',Id(r'a'),IntLiteral(1)),[Return(None)],[])],FloatType())]))
+
+    def test_complex_func(self):
+        input = """
+            procedure TCastleBaseTestCaseAssertVectorEquals(Expected, Actual: Integer);
+            begin
+                if not TVector2ByteEquals(Expected, Actual) then
+                Fail(Format("Vectors (TVector2Byte) are not equal: expected: %s, actual: %s"));
+            end
+        """
+        expect = "Program([FuncDecl(Id(TCastleBaseTestCaseAssertVectorEquals),[VarDecl(Id(Expected),IntType),VarDecl(Id(Actual),IntType)],VoidType,[],[If(UnaryOp(not,CallExpr(Id(TVector2ByteEquals),[Id(Expected),Id(Actual)])),[CallStmt(Id(Fail),[CallExpr(Id(Format),[StringLiteral(Vectors (TVector2Byte) are not equal: expected: %s, actual: %s)])])],[])])])"
         self.assertTrue(TestAST.test(input,expect,312))
-    def test_statement_with_IF_ELSE_nested(self):
-        input = """pROCEDURE IF_ELSE_nested(c: integer) ;
-                   var y:real ;
-                   BEGIN
-                    if(a>=1) then a:=1 ;
-                    else if (1<=2)<>(2<=3)
-                        then x:=2 ;
-                    else foo(a+1,1);
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'IF_ELSE_nested'),[VarDecl(Id(r'c'),IntType())],[VarDecl(Id(r'y'),FloatType())],[If(BinaryOp(r'>=',Id(r'a'),IntLiteral(1)),[Assign(Id(r'a'),IntLiteral(1))],[If(BinaryOp(r'<>',BinaryOp(r'<=',IntLiteral(1),IntLiteral(2)),BinaryOp(r'<=',IntLiteral(2),IntLiteral(3))),[Assign(Id(r'x'),IntLiteral(2))],[CallStmt(Id(r'foo'),[BinaryOp(r'+',Id(r'a'),IntLiteral(1)),IntLiteral(1)])])])],VoidType())]))
+
+    def test_max_func(self):
+        input = """
+            function max(num1, num2: integer): integer;
+            var
+                (* local variable declaration *)
+                result: integer;
+            begin
+                if (num1 > num2) then
+                result := num1;
+            else
+                result := num2;
+                max := result;
+            end
+            """
+        expect = "Program([FuncDecl(Id(max),[VarDecl(Id(num1),IntType),VarDecl(Id(num2),IntType)],IntType,[VarDecl(Id(result),IntType)],[If(BinaryOp(>,Id(num1),Id(num2)),[AssignStmt(Id(result),Id(num1))],[AssignStmt(Id(result),Id(num2))]),AssignStmt(Id(max),Id(result))])])"
         self.assertTrue(TestAST.test(input,expect,313))
-    def test_statement_with_more_IF(self):
-        input = """pROCEDURE more_IF(c: real) ;
-                   var x:real ;
 
-                   BEGIN
-                    if(a>=1) then a:=2 ;
-                    if (1<=2) then beGIN x:=2 ; eND
-                    else foo(a+1,2);
-                    if (1) then return;
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'more_IF'),[VarDecl(Id(r'c'),FloatType())],[VarDecl(Id(r'x'),FloatType())],[If(BinaryOp(r'>=',Id(r'a'),IntLiteral(1)),[Assign(Id(r'a'),IntLiteral(2))],[]),If(BinaryOp(r'<=',IntLiteral(1),IntLiteral(2)),[Assign(Id(r'x'),IntLiteral(2))],[CallStmt(Id(r'foo'),[BinaryOp(r'+',Id(r'a'),IntLiteral(1)),IntLiteral(2)])]),If(IntLiteral(1),[Return(None)],[])],VoidType())]))
+    def test_very_simple_program(self):
+        input = """
+        procedurE foo (b : real) ;
+            begin
+             1[1] := 1;
+             //(1>=0)[2] := 2+a[1][1]+c+("abc"< 0);
+             ahihi(1)[m+1] := 3;
+             (1=1)[1]:=1;
+             (1+a[1]+(1<0))[10] := 4;
+            End
+        """
+        expect = "Program([FuncDecl(Id(foo),[VarDecl(Id(b),FloatType)],VoidType,[],[AssignStmt(ArrayCell(IntLiteral(1),IntLiteral(1)),IntLiteral(1)),AssignStmt(ArrayCell(CallExpr(Id(ahihi),[IntLiteral(1)]),BinaryOp(+,Id(m),IntLiteral(1))),IntLiteral(3)),AssignStmt(ArrayCell(BinaryOp(=,IntLiteral(1),IntLiteral(1)),IntLiteral(1)),IntLiteral(1)),AssignStmt(ArrayCell(BinaryOp(+,BinaryOp(+,IntLiteral(1),ArrayCell(Id(a),IntLiteral(1))),BinaryOp(<,IntLiteral(1),IntLiteral(0))),IntLiteral(10)),IntLiteral(4))])])"
         self.assertTrue(TestAST.test(input,expect,314))
-    def test_statement__nested_IF_with_COBOUND(self):
-        input = """pROCEDURE nested_IF_with_COBOUND(c: string) ;
-                   var x:real ; z: integer;
 
-                   BEGIN
-                    if(a>=1) then beGin
-                        a:=1 ;
-                        if(2=1) then
-                        a:= b[1];
-                        else b:=a[1]:= 1;
-                    ENd
-                    END"""
-        expect = str(Program([FuncDecl(Id(r'nested_IF_with_COBOUND'),[VarDecl(Id(r'c'),StringType())],[VarDecl(Id(r'x'),FloatType()),VarDecl(Id(r'z'),IntType())],[If(BinaryOp(r'>=',Id(r'a'),IntLiteral(1)),[Assign(Id(r'a'),IntLiteral(1)),If(BinaryOp(r'=',IntLiteral(2),IntLiteral(1)),[Assign(Id(r'a'),ArrayCell(Id(r'b'),IntLiteral(1)))],[Assign(ArrayCell(Id(r'a'),IntLiteral(1)),IntLiteral(1)),Assign(Id(r'b'),ArrayCell(Id(r'a'),IntLiteral(1)))])],[])],VoidType())]))
+    def test_more_assign_statement(self):
+        input = """procedure a(); 
+        begin 
+            r:=d;
+            d:=d;
+            d:=r;
+            r:=d:=r[2]:=r(r[r]+d)[2]:=d:=r+4;
+            if r then r();
+        end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(Id(r),Id(d)),AssignStmt(Id(d),Id(d)),AssignStmt(Id(d),Id(r)),AssignStmt(Id(d),BinaryOp(+,Id(r),IntLiteral(4))),AssignStmt(ArrayCell(CallExpr(Id(r),[BinaryOp(+,ArrayCell(Id(r),Id(r)),Id(d))]),IntLiteral(2)),Id(d)),AssignStmt(ArrayCell(Id(r),IntLiteral(2)),ArrayCell(CallExpr(Id(r),[BinaryOp(+,ArrayCell(Id(r),Id(r)),Id(d))]),IntLiteral(2))),AssignStmt(Id(d),ArrayCell(Id(r),IntLiteral(2))),AssignStmt(Id(r),Id(d)),If(Id(r),[CallStmt(Id(r),[])],[])])])"
         self.assertTrue(TestAST.test(input,expect,315))
-    def test_statement_WITH(self):
-        input = """pROCEDURE WITHstm(c: real) ;
-                   BEGIN
-                    with a , b : integer ; c : array [2 .. 4] of real ; dO
-                    d := c[a] + b ;
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'WITHstm'),[VarDecl(Id(r'c'),FloatType())],[],[With([VarDecl(Id(r'a'),IntType()),VarDecl(Id(r'b'),IntType()),VarDecl(Id(r'c'),ArrayType(2,4,FloatType()))],[Assign(Id(r'd'),BinaryOp(r'+',ArrayCell(Id(r'c'),Id(r'a')),Id(r'b')))])],VoidType())]))
-        self.assertTrue(TestAST.test(input,expect,316))
-    def test_statement_WITH_with_COBOUND(self):
-        input = """pROCEDURE WITH_with_COBOUND(c: real) ;
-                   BEGIN
-                    with a , b : integer ; c : array [1 .. 2] of real ; do begin
-                    a := c[a] + b ;
-                    foo();WITH_with_COBOUND(a,b,c);
 
-                    end
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'WITH_with_COBOUND'),[VarDecl(Id(r'c'),FloatType())],[],[With([VarDecl(Id(r'a'),IntType()),VarDecl(Id(r'b'),IntType()),VarDecl(Id(r'c'),ArrayType(1,2,FloatType()))],[Assign(Id(r'a'),BinaryOp(r'+',ArrayCell(Id(r'c'),Id(r'a')),Id(r'b'))),CallStmt(Id(r'foo'),[]),CallStmt(Id(r'WITH_with_COBOUND'),[Id(r'a'),Id(r'b'),Id(r'c')])])],VoidType())]))
+    def test_assignment_statement(self):
+        input = """
+        procedure a(); begin a:=2=2; end
+        """
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(Id(a),BinaryOp(=,IntLiteral(2),IntLiteral(2)))])])"
+        self.assertTrue(TestAST.test(input,expect,316))
+
+    def test_multi_assignment_statement(self):
+        input = """procedure a(); begin a:=2[2]:=e:=wkk(33[32])[1]:=2=2; end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(ArrayCell(CallExpr(Id(wkk),[ArrayCell(IntLiteral(33),IntLiteral(32))]),IntLiteral(1)),BinaryOp(=,IntLiteral(2),IntLiteral(2))),AssignStmt(Id(e),ArrayCell(CallExpr(Id(wkk),[ArrayCell(IntLiteral(33),IntLiteral(32))]),IntLiteral(1))),AssignStmt(ArrayCell(IntLiteral(2),IntLiteral(2)),Id(e)),AssignStmt(Id(a),ArrayCell(IntLiteral(2),IntLiteral(2)))])])"
         self.assertTrue(TestAST.test(input,expect,317))
-    def test_statement_WITH_with_CALL_statement(self):
-        input = """pROCEDURE WITH_with_CALL_statement(c: real) ;
-                   BEGIN
-                    with a ,b : integer ; c: array [1 .. 2] of real ; do
-                    begin
-                    d := c [a] + b ;
-                    foo();WITH_with_CALL_statement(a,b,c);
-                    with a , b : integer ; do
-                    begin
-                        WITH_with_CALL_statement(a,b,"abc");
-                    end
-                    end
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'WITH_with_CALL_statement'),[VarDecl(Id(r'c'),FloatType())],[],[With([VarDecl(Id(r'a'),IntType()),VarDecl(Id(r'b'),IntType()),VarDecl(Id(r'c'),ArrayType(1,2,FloatType()))],[Assign(Id(r'd'),BinaryOp(r'+',ArrayCell(Id(r'c'),Id(r'a')),Id(r'b'))),CallStmt(Id(r'foo'),[]),CallStmt(Id(r'WITH_with_CALL_statement'),[Id(r'a'),Id(r'b'),Id(r'c')]),With([VarDecl(Id(r'a'),IntType()),VarDecl(Id(r'b'),IntType())],[CallStmt(Id(r'WITH_with_CALL_statement'),[Id(r'a'),Id(r'b'),StringLiteral(r'abc')])])])],VoidType())]))
+
+    def test_ambiglious_if_statement(self):
+        input = """procedure a(); begin if a=2 then if b() then c(); else a:=4;end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[If(BinaryOp(=,Id(a),IntLiteral(2)),[If(CallExpr(Id(b),[]),[CallStmt(Id(c),[])],[AssignStmt(Id(a),IntLiteral(4))])],[])])])"
         self.assertTrue(TestAST.test(input,expect,318))
-    def test_statement_nested_WITH(self):
-        input = """function nested_WITH(d: real): sTRIng;
-                   BEGIN
-                    with c , d : integer ; c : array [1 .. 2] of real ; do
-                    with a , b : integer ;
-                    do
-                        nested_WITH(a,b,"anc");
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'nested_WITH'),[VarDecl(Id(r'd'),FloatType())],[],[With([VarDecl(Id(r'c'),IntType()),VarDecl(Id(r'd'),IntType()),VarDecl(Id(r'c'),ArrayType(1,2,FloatType()))],[With([VarDecl(Id(r'a'),IntType()),VarDecl(Id(r'b'),IntType())],[CallStmt(Id(r'nested_WITH'),[Id(r'a'),Id(r'b'),StringLiteral(r'anc')])])])],StringType())]))
+
+    def test_if_statement(self):
+        input = """procedure a(); begin if a=2 then b(); end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[If(BinaryOp(=,Id(a),IntLiteral(2)),[CallStmt(Id(b),[])],[])])])"
         self.assertTrue(TestAST.test(input,expect,319))
-    def test_statement_FOR(self):
-        input = """function statement_FOR(c: real): STRIng;
-                   BEGIN
-                    FOR i:=1 to m+10
-                    do
-                        s := s + 1;
-                        m := s;
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'statement_FOR'),[VarDecl(Id(r'c'),FloatType())],[],[For(Id(r'i'),IntLiteral(1),BinaryOp(r'+',Id(r'm'),IntLiteral(10)),True,[Assign(Id(r's'),BinaryOp(r'+',Id(r's'),IntLiteral(1)))]),Assign(Id(r'm'),Id(r's'))],StringType())]))
+
+    def test_if_else_statement(self):
+        input = """procedure a(); begin if a=2 then b(); else c(); end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[If(BinaryOp(=,Id(a),IntLiteral(2)),[CallStmt(Id(b),[])],[CallStmt(Id(c),[])])])])"
         self.assertTrue(TestAST.test(input,expect,320))
-    def test_statement_nested_FOR_WHILE_FOR(self):
-        input = """PROCEDURE foo(c: real);
-                   BEGIN
-                    FOR i:=1 to m+10 do beGin
-                        while i>1 do
-                            FOR i:=m+1 doWnTO 10 do
-                                while j>1 do x:=foo(10);
-                                print(j);
-                    End
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'c'),FloatType())],[],[For(Id(r'i'),IntLiteral(1),BinaryOp(r'+',Id(r'm'),IntLiteral(10)),True,[While(BinaryOp(r'>',Id(r'i'),IntLiteral(1)),[For(Id(r'i'),BinaryOp(r'+',Id(r'm'),IntLiteral(1)),IntLiteral(10),False,[While(BinaryOp(r'>',Id(r'j'),IntLiteral(1)),[Assign(Id(r'x'),CallExpr(Id(r'foo'),[IntLiteral(10)]))])])]),CallStmt(Id(r'print'),[Id(r'j')])])],VoidType())]))
+
+    def test_full_option_if_else_statement(self):
+        input = """procedure a();begin if a() then if b() then c(); else d();else e();end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[If(CallExpr(Id(a),[]),[If(CallExpr(Id(b),[]),[CallStmt(Id(c),[])],[CallStmt(Id(d),[])])],[CallStmt(Id(e),[])])])])"
         self.assertTrue(TestAST.test(input,expect,321))
 
-    def test_statement_with_BREAK(self):
-        input = """pROCEDURE foo(c: real);
-                   BEGIN
-                    FOR i:=1 to m+10 do beGin
-                        print(i);
-                        brEaK;
-                    end
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'c'),FloatType())],[],[For(Id(r'i'),IntLiteral(1),BinaryOp(r'+',Id(r'm'),IntLiteral(10)),True,[CallStmt(Id(r'print'),[Id(r'i')]),Break()])],VoidType())]))
-
+    def test_while_statement(self):
+        input = """procedure a(); begin while true do b(); end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[While(BooleanLiteral(True),[CallStmt(Id(b),[])])])])"
         self.assertTrue(TestAST.test(input,expect,322))
 
-    def test_statement_BREAK2(self):
-        input = """pROCEDURE foo(c: real);
-                   BEGIN
-                    FOR i:=1 to m+10 do beGin
-                        brEaK;
-                    end
-                    break;
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'c'),FloatType())],[],[For(Id(r'i'),IntLiteral(1),BinaryOp(r'+',Id(r'm'),IntLiteral(10)),True,[Break()]),Break()],VoidType())]))
-
+    def test_error_while_statement(self):
+        input = """procedure a();begin while a() do while false do d(); end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[While(CallExpr(Id(a),[]),[While(BooleanLiteral(False),[CallStmt(Id(d),[])])])])])"
         self.assertTrue(TestAST.test(input,expect,323))
 
-    def test_statement_CONTINUE(self):
-        input = """PROCEDURE foo(c: real);
-                   BEGIN
-                    while (1) do ContinuE ;
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'c'),FloatType())],[],[While(IntLiteral(1),[Continue()])],VoidType())]))
-
+    def test_for_statement(self):
+        input = """procedure a(); begin for i:=1 to 2 do b(); end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[For(Id(i),IntLiteral(1),IntLiteral(2),True,[CallStmt(Id(b),[])])])])"
         self.assertTrue(TestAST.test(input,expect,324))
 
-    def test_statement_RETURN(self):
-        input = """pROCEDURE foo(c: real);
-                   BEGIN
-                    while (1) do RETURN ;
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'c'),FloatType())],[],[While(IntLiteral(1),[Return(None)])],VoidType())]))
-
+    def test_for_downto_statement(self):
+        input = """procedure a(); begin for i:=1 downto 20000 do b(); end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[For(Id(i),IntLiteral(1),IntLiteral(20000),False,[CallStmt(Id(b),[])])])])"
         self.assertTrue(TestAST.test(input,expect,325))
 
-    def test_statement_CALL(self):
-        input = """function statement_CALL(c: real): real;
-                   BEGIN
-                    statement_CALL(3,a+1,a<>1,a[1]);
-                    return 1;
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'statement_CALL'),[VarDecl(Id(r'c'),FloatType())],[],[CallStmt(Id(r'statement_CALL'),[IntLiteral(3),BinaryOp(r'+',Id(r'a'),IntLiteral(1)),BinaryOp(r'<>',Id(r'a'),IntLiteral(1)),ArrayCell(Id(r'a'),IntLiteral(1))]),Return(IntLiteral(1))],FloatType())]))
-
+    def test_double_for(self):
+        input = """procedure a(); begin for i:=2 to 400 do for j:=i to 400+1 do print(i+j," "); end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[For(Id(i),IntLiteral(2),IntLiteral(400),True,[For(Id(j),Id(i),BinaryOp(+,IntLiteral(400),IntLiteral(1)),True,[CallStmt(Id(print),[BinaryOp(+,Id(i),Id(j)),StringLiteral( )])])])])])"
         self.assertTrue(TestAST.test(input,expect,326))
 
-    def test_statement_nested_CALL(self):
-
-        input = """function foo(c: real): integer;
-                   BEGIN
-                    y := foo(3,foo(foo1(foo(2,a+1))));
-                    return func(a(1,2));
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'c'),FloatType())],[],[Assign(Id(r'y'),CallExpr(Id(r'foo'),[IntLiteral(3),CallExpr(Id(r'foo'),[CallExpr(Id(r'foo1'),[CallExpr(Id(r'foo'),[IntLiteral(2),BinaryOp(r'+',Id(r'a'),IntLiteral(1))])])])])),Return(CallExpr(Id(r'func'),[CallExpr(Id(r'a'),[IntLiteral(1),IntLiteral(2)])]))],IntType())]))
-
+    def test_quicksort(self):
+        input = """    
+              procedure sort(l,r: integer);
+                var i,j,x,y: integer;
+                begin
+                  i:=l;
+                  j:=r;
+                  x:=a[(l+r) div 2];
+                  while (i<=j) do
+                  begin
+                    while a[i]<x do inc(i);
+                    while x<a[j] do dec(j);
+                    if not(i>j) then
+                      begin
+                        y:=a[i];
+                        a[i]:=a[j];
+                        a[j]:=y;
+                        inc(i);
+                        j:=j-1;
+                      end
+                  end
+                  if l<j then sort(l,j);
+                  if i<r then sort(i,r);
+                end
+            """
+        expect = "Program([FuncDecl(Id(sort),[VarDecl(Id(l),IntType),VarDecl(Id(r),IntType)],VoidType,[VarDecl(Id(i),IntType),VarDecl(Id(j),IntType),VarDecl(Id(x),IntType),VarDecl(Id(y),IntType)],[AssignStmt(Id(i),Id(l)),AssignStmt(Id(j),Id(r)),AssignStmt(Id(x),ArrayCell(Id(a),BinaryOp(div,BinaryOp(+,Id(l),Id(r)),IntLiteral(2)))),While(BinaryOp(<=,Id(i),Id(j)),[While(BinaryOp(<,ArrayCell(Id(a),Id(i)),Id(x)),[CallStmt(Id(inc),[Id(i)])]),While(BinaryOp(<,Id(x),ArrayCell(Id(a),Id(j))),[CallStmt(Id(dec),[Id(j)])]),If(UnaryOp(not,BinaryOp(>,Id(i),Id(j))),[AssignStmt(Id(y),ArrayCell(Id(a),Id(i))),AssignStmt(ArrayCell(Id(a),Id(i)),ArrayCell(Id(a),Id(j))),AssignStmt(ArrayCell(Id(a),Id(j)),Id(y)),CallStmt(Id(inc),[Id(i)]),AssignStmt(Id(j),BinaryOp(-,Id(j),IntLiteral(1)))],[])]),If(BinaryOp(<,Id(l),Id(j)),[CallStmt(Id(sort),[Id(l),Id(j)])],[]),If(BinaryOp(<,Id(i),Id(r)),[CallStmt(Id(sort),[Id(i),Id(r)])],[])])])"
         self.assertTrue(TestAST.test(input,expect,327))
 
-    def test_statement_nested_WITH_CALL(self):
-
-        input = """function foo(c: real): integer;
-                   BEGIN
-                    foo (3,a+1);
-                    foo1();
-                    return;
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'c'),FloatType())],[],[CallStmt(Id(r'foo'),[IntLiteral(3),BinaryOp(r'+',Id(r'a'),IntLiteral(1))]),CallStmt(Id(r'foo1'),[]),Return(None)],IntType())]))
-
+    def test_arraycell_assign_arraycell(self):
+        input = """
+        procedure a();
+        begin
+            a[2]:=a[4];
+        end
+        """
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(ArrayCell(Id(a),IntLiteral(2)),ArrayCell(Id(a),IntLiteral(4)))])])"
         self.assertTrue(TestAST.test(input,expect,328))
 
-    def test_statement_CALL_with_COMMENT(self):
-        input = """function foo(c: real): integer;
-                   BEGIN
-                    text(insert); { colour}
-                	{.comment here.}
-                    return func(a(1,2));
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'c'),FloatType())],[],[CallStmt(Id(r'text'),[Id(r'insert')]),Return(CallExpr(Id(r'func'),[CallExpr(Id(r'a'),[IntLiteral(1),IntLiteral(2)])]))],IntType())]))
-
+    def test_make_square(self):
+        input = """
+            procedure makesquare( sq : real; limit : integer);
+                var
+                   num,r,c : integer;
+                begin
+                   for r:=1 to limit do
+                     for c:=1 to limit do
+                       sq[rc] := 0;
+                   if (limit and 1)<>0 then
+                     begin
+                        r:=(limit+1) div 2;
+                        c:=limit;
+                        for num:=1 to limit*limit do
+                          begin
+                             if sq[rc]<>0 then
+                               begin
+                                  dec(r);
+                                  if r<1 then
+                                    inc(r,limit);
+                                  dec(c,2);
+                                  if c<1 then
+                                    inc(c,limit);
+                               end
+                             sq[rc]:=num;
+                             inc(r);
+                             if r>limit then
+                               dec(r,limit);
+                             inc(c);
+                             if c>limit then
+                               dec(c,limit);
+                          end
+                     end
+                 end
+            """
+        expect = "Program([FuncDecl(Id(makesquare),[VarDecl(Id(sq),FloatType),VarDecl(Id(limit),IntType)],VoidType,[VarDecl(Id(num),IntType),VarDecl(Id(r),IntType),VarDecl(Id(c),IntType)],[For(Id(r),IntLiteral(1),Id(limit),True,[For(Id(c),IntLiteral(1),Id(limit),True,[AssignStmt(ArrayCell(Id(sq),Id(rc)),IntLiteral(0))])]),If(BinaryOp(<>,BinaryOp(and,Id(limit),IntLiteral(1)),IntLiteral(0)),[AssignStmt(Id(r),BinaryOp(div,BinaryOp(+,Id(limit),IntLiteral(1)),IntLiteral(2))),AssignStmt(Id(c),Id(limit)),For(Id(num),IntLiteral(1),BinaryOp(*,Id(limit),Id(limit)),True,[If(BinaryOp(<>,ArrayCell(Id(sq),Id(rc)),IntLiteral(0)),[CallStmt(Id(dec),[Id(r)]),If(BinaryOp(<,Id(r),IntLiteral(1)),[CallStmt(Id(inc),[Id(r),Id(limit)])],[]),CallStmt(Id(dec),[Id(c),IntLiteral(2)]),If(BinaryOp(<,Id(c),IntLiteral(1)),[CallStmt(Id(inc),[Id(c),Id(limit)])],[])],[]),AssignStmt(ArrayCell(Id(sq),Id(rc)),Id(num)),CallStmt(Id(inc),[Id(r)]),If(BinaryOp(>,Id(r),Id(limit)),[CallStmt(Id(dec),[Id(r),Id(limit)])],[]),CallStmt(Id(inc),[Id(c)]),If(BinaryOp(>,Id(c),Id(limit)),[CallStmt(Id(dec),[Id(c),Id(limit)])],[])])],[])])])"
         self.assertTrue(TestAST.test(input,expect,329))
 
-    def test_statement_CALL_with_more_parameter(self):
-        input = """function foo(c: real): integer;
-                   BEGIN
-                    foo(3,a+1,x and then y, c,a[1],foo(1,2)[m+1]);
-                    return foo2() + foo() + 1;
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'c'),FloatType())],[],[CallStmt(Id(r'foo'),[IntLiteral(3),BinaryOp(r'+',Id(r'a'),IntLiteral(1)),BinaryOp(r'andthen',Id(r'x'),Id(r'y')),Id(r'c'),ArrayCell(Id(r'a'),IntLiteral(1)),ArrayCell(CallExpr(Id(r'foo'),[IntLiteral(1),IntLiteral(2)]),BinaryOp(r'+',Id(r'm'),IntLiteral(1)))]),Return(BinaryOp(r'+',BinaryOp(r'+',CallExpr(Id(r'foo2'),[]),CallExpr(Id(r'foo'),[])),IntLiteral(1)))],IntType())]))
-
+    def test_write_square(self):
+        input = """
+                procedure writesquare(sq : real;limit : integer);
+                var
+                   row,col : integer;
+                begin
+                   for row:=1 to Limit do
+                     begin
+                        for col:=1 to (limit div 2) do
+                          write(sq[row*2*col-1],sq[row*2*col],endl);
+                        writeln(sq[row*limit]);
+                     end
+                end
+        """
+        expect = "Program([FuncDecl(Id(writesquare),[VarDecl(Id(sq),FloatType),VarDecl(Id(limit),IntType)],VoidType,[VarDecl(Id(row),IntType),VarDecl(Id(col),IntType)],[For(Id(row),IntLiteral(1),Id(Limit),True,[For(Id(col),IntLiteral(1),BinaryOp(div,Id(limit),IntLiteral(2)),True,[CallStmt(Id(write),[ArrayCell(Id(sq),BinaryOp(-,BinaryOp(*,BinaryOp(*,Id(row),IntLiteral(2)),Id(col)),IntLiteral(1))),ArrayCell(Id(sq),BinaryOp(*,BinaryOp(*,Id(row),IntLiteral(2)),Id(col))),Id(endl)])]),CallStmt(Id(writeln),[ArrayCell(Id(sq),BinaryOp(*,Id(row),Id(limit)))])])])])"
         self.assertTrue(TestAST.test(input,expect,330))
 
-    def test_statement_MIX_ASSIGMENT(self):
-        input = """
-                procedure test1() ;
-                begin
-	               if a=b then
-	               bEGin
-		                 b := c := 6;
-		                 if(e <> f) then foo(a,c); else a := b := c ;
-	               end
-                end
-                """
-        expect = str(Program([FuncDecl(Id(r'test1'),[],[],[If(BinaryOp(r'=',Id(r'a'),Id(r'b')),[Assign(Id(r'c'),IntLiteral(6)),Assign(Id(r'b'),Id(r'c')),If(BinaryOp(r'<>',Id(r'e'),Id(r'f')),[CallStmt(Id(r'foo'),[Id(r'a'),Id(r'c')])],[Assign(Id(r'b'),Id(r'c')),Assign(Id(r'a'),Id(r'b'))])],[])],VoidType())]))
-
+    def test_break(self):
+        input = """procedure a(); begin for i:=2 to 400 do begin print(i+j," ");break; end end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[For(Id(i),IntLiteral(2),IntLiteral(400),True,[CallStmt(Id(print),[BinaryOp(+,Id(i),Id(j)),StringLiteral( )]),Break])])])"
         self.assertTrue(TestAST.test(input,expect,331))
 
-    def test_statement_mix_IF_WHILE(self):
-        input = """
-                procedure test_mix_if_while() ;
-                begin
-	               if a=b then if c=d then while (d=e) do
-                   beGin
-                        if (1) then print("OK");
-                   eND
-               else c := 1;
-                end
-                """
-        expect = str(Program([FuncDecl(Id(r'test_mix_if_while'),[],[],[If(BinaryOp(r'=',Id(r'a'),Id(r'b')),[If(BinaryOp(r'=',Id(r'c'),Id(r'd')),[While(BinaryOp(r'=',Id(r'd'),Id(r'e')),[If(IntLiteral(1),[CallStmt(Id(r'print'),[StringLiteral(r'OK')])],[])])],[Assign(Id(r'c'),IntLiteral(1))])],[])],VoidType())]))
-
+    def test_continue(self):
+        input = """procedure a(); begin for i:=2 to 400 do begin print(i+j," ");continue; end end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[For(Id(i),IntLiteral(2),IntLiteral(400),True,[CallStmt(Id(print),[BinaryOp(+,Id(i),Id(j)),StringLiteral( )]),Continue])])])"
         self.assertTrue(TestAST.test(input,expect,332))
-    def test_statement_mix_VAR_FUNCTION_PROCEDURE(self):
-        input = """
-                VAR i: real ;
-                FUNCTION funcmix(): integer ;
-                begin
-	               return 100;
-                end
-                procedure procmix() ;
-                var
-	               m: integer ;
-                begin
-	               m := f() ;  
-                   put(m);
-	               put(main);
-                end
-                var g: real ;
-                """
-        expect = str(Program([VarDecl(Id(r'i'),FloatType()),FuncDecl(Id(r'funcmix'),[],[],[Return(IntLiteral(100))],IntType()),FuncDecl(Id(r'procmix'),[],[VarDecl(Id(r'm'),IntType())],[Assign(Id(r'm'),CallExpr(Id(r'f'),[])),CallStmt(Id(r'put'),[Id(r'm')]),CallStmt(Id(r'put'),[Id(r'main')])],VoidType()),VarDecl(Id(r'g'),FloatType())]))
 
+    def test_return(self):
+        input = """procedure a(); begin return 2; end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[Return(Some(IntLiteral(2)))])])"
         self.assertTrue(TestAST.test(input,expect,333))
 
-    def test_statement_PROCEDURE(self):
-        input = """
-                proceDure Hello(b:integer);
-                begin
-                    a := b := b + c;
-                end
-                """
-        expect = str(Program([FuncDecl(Id(r'Hello'),[VarDecl(Id(r'b'),IntType())],[],[Assign(Id(r'b'),BinaryOp(r'+',Id(r'b'),Id(r'c'))),Assign(Id(r'a'),Id(r'b'))],VoidType())]))
-
+    def test_return_in_function(self):
+        input = """function a():integer; begin return; end"""
+        expect = "Program([FuncDecl(Id(a),[],IntType,[],[Return(None)])])"
         self.assertTrue(TestAST.test(input,expect,334))
-    def test_statement_FUNCTION(self):
-        input = """
-        var x, y: real;
 
-        function add(x, y: real): real;
-        
+    def test_nested_compound_statement(self):
+        input = """function a():integer; begin begin begin begin end end begin end end end"""
+        expect = "Program([FuncDecl(Id(a),[],IntType,[],[])])"
+        self.assertTrue(TestAST.test(input,expect,335))
+
+    def test_callstmt_and_callexpr(self):
+        input = """
+        procedure a();
         begin
-            return x + y + random();
+            a();
+            a:=a();
         end
         """
-        expect = str(Program([VarDecl(Id(r'x'),FloatType()),VarDecl(Id(r'y'),FloatType()),FuncDecl(Id(r'add'),[VarDecl(Id(r'x'),FloatType()),VarDecl(Id(r'y'),FloatType())],[],[Return(BinaryOp(r'+',BinaryOp(r'+',Id(r'x'),Id(r'y')),CallExpr(Id(r'random'),[])))],FloatType())]))
-
-        self.assertTrue(TestAST.test(input,expect,335))
-    def test_statement_ASSIGN_with_nested_index_express(self):
-        """
-                procedure mainfoo() ;
-                beGin
-                 a[b[2]] := 100;
-                 foo(2);
-                 return ;
-                eND
-                """
-        input = """
-                procedure mainfoo() ;
-                beGin
-                 a[b[2]] := 100;
-                 foo(2);
-                 return ;
-                eND
-                """
-        expect = str(Program([FuncDecl(Id(r'mainfoo'),[],[],[Assign(ArrayCell(Id(r'a'),ArrayCell(Id(r'b'),IntLiteral(2))),IntLiteral(100)),CallStmt(Id(r'foo'),[IntLiteral(2)]),Return(None)],VoidType())]))
-
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[CallStmt(Id(a),[]),AssignStmt(Id(a),CallExpr(Id(a),[]))])])"
         self.assertTrue(TestAST.test(input,expect,336))
-    def test_statement_mix_more_ELSE(self):
-        """
-                PROCEDURE main() ;
-                beGin
-                 if a=b then 
-                 if c = d then e := f;
-                 else i := 1;
-                 else x := 2 ;
-                eND
-                """
-        input = """
-                PROCEDURE main() ;
-                beGin
-                 if a=b then 
-                 if c = d then e := f;
-                 else i := 1;
-                 else x := 2 ;
-                eND
-                """
-        expect = str(Program([FuncDecl(Id(r'main'),[],[],[If(BinaryOp(r'=',Id(r'a'),Id(r'b')),[If(BinaryOp(r'=',Id(r'c'),Id(r'd')),[Assign(Id(r'e'),Id(r'f'))],[Assign(Id(r'i'),IntLiteral(1))])],[Assign(Id(r'x'),IntLiteral(2))])],VoidType())]))
 
+    def test_with_statement(self):
+        input = """function a():integer; begin with a:integer;b:real; do d:=3; end"""
+        expect = "Program([FuncDecl(Id(a),[],IntType,[],[With([VarDecl(Id(a),IntType),VarDecl(Id(b),FloatType)],[AssignStmt(Id(d),IntLiteral(3))])])])"
         self.assertTrue(TestAST.test(input,expect,337))
-    def test_statement_mix_complex_FOR_statement(self):
-        input = """
-                procedure swap() ;
-                var a: array[0 .. 1] of integer;
-                 i,j,temp: integer;
-                beGin
-                    for i := 0 to n do
-                        for j:= i+1 to n-1 do
-                            if(a[i]>a[j]) then
-                            beGin
-                            temp := a[i];
-                            a[i] := a[j];
-                            a[j] := temp;
-                            eND
-                    print(a);
-                eND
-                """
-        expect = str(Program([FuncDecl(Id(r'swap'),[],[VarDecl(Id(r'a'),ArrayType(0,1,IntType())),VarDecl(Id(r'i'),IntType()),VarDecl(Id(r'j'),IntType()),VarDecl(Id(r'temp'),IntType())],[For(Id(r'i'),IntLiteral(0),Id(r'n'),True,[For(Id(r'j'),BinaryOp(r'+',Id(r'i'),IntLiteral(1)),BinaryOp(r'-',Id(r'n'),IntLiteral(1)),True,[If(BinaryOp(r'>',ArrayCell(Id(r'a'),Id(r'i')),ArrayCell(Id(r'a'),Id(r'j'))),[Assign(Id(r'temp'),ArrayCell(Id(r'a'),Id(r'i'))),Assign(ArrayCell(Id(r'a'),Id(r'i')),ArrayCell(Id(r'a'),Id(r'j'))),Assign(ArrayCell(Id(r'a'),Id(r'j')),Id(r'temp'))],[])])]),CallStmt(Id(r'print'),[Id(r'a')])],VoidType())]))
-        self.assertTrue(TestAST.test(input,expect,338))
-    def test_statement_RETURN_EXPRESSION(self):
-        input = """
-                Function CountX(A:array[0 .. 100] of integer; N,X : Integer) : Integer;
-                Var i , Count : Integer;
-                Begin
-                 Count := 0;
-                 For i:=1 to N do
-                  If ( A[i] = X ) then
-                   Count := Count + 1;
-                 return Count;
-                End
-                """
-        expect = str(Program([FuncDecl(Id(r'CountX'),[VarDecl(Id(r'A'),ArrayType(0,100,IntType())),VarDecl(Id(r'N'),IntType()),VarDecl(Id(r'X'),IntType())],[VarDecl(Id(r'i'),IntType()),VarDecl(Id(r'Count'),IntType())],[Assign(Id(r'Count'),IntLiteral(0)),For(Id(r'i'),IntLiteral(1),Id(r'N'),True,[If(BinaryOp(r'=',ArrayCell(Id(r'A'),Id(r'i')),Id(r'X')),[Assign(Id(r'Count'),BinaryOp(r'+',Id(r'Count'),IntLiteral(1)))],[])]),Return(Id(r'Count'))],IntType())]))
 
+    def test_call_statement(self):
+        input = """function a():integer; begin return 1; end"""
+        expect = "Program([FuncDecl(Id(a),[],IntType,[],[Return(Some(IntLiteral(1)))])])"
+        self.assertTrue(TestAST.test(input,expect,338))
+
+    def test_build_in_function_getInt(self):
+        input = """procedure a(); begin getInt();a:=getInt(); end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[CallStmt(Id(getInt),[]),AssignStmt(Id(a),CallExpr(Id(getInt),[]))])])"
         self.assertTrue(TestAST.test(input,expect,339))
 
-    def test_statement_index_expression_in_IF(self):
-        input = """
-                Procedure replace (A:array[0 .. 100] of integer;N, x,y:Integer);
-                Var i:Integer;
-                Begin
-                 For i:=0 to N do
-                  If(A[i] = x) then { x ==> y }
-                  A[i] := y;
-                  return;
-                End
-                """
-        expect = str(Program([FuncDecl(Id(r'replace'),[VarDecl(Id(r'A'),ArrayType(0,100,IntType())),VarDecl(Id(r'N'),IntType()),VarDecl(Id(r'x'),IntType()),VarDecl(Id(r'y'),IntType())],[VarDecl(Id(r'i'),IntType())],[For(Id(r'i'),IntLiteral(0),Id(r'N'),True,[If(BinaryOp(r'=',ArrayCell(Id(r'A'),Id(r'i')),Id(r'x')),[Assign(ArrayCell(Id(r'A'),Id(r'i')),Id(r'y'))],[])]),Return(None)],VoidType())]))
-
+    def test_built_in_procecdure_putInt(self):
+        input = """procedure a(); begin putInt();a:=putInt(); end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[CallStmt(Id(putInt),[]),AssignStmt(Id(a),CallExpr(Id(putInt),[]))])])"
         self.assertTrue(TestAST.test(input,expect,340))
 
-    def test_statement_mix_FUNCCALL_as_IF_EXPRESSION(self):
-        input = """
-                function calc(i : integer): boolean;
-                var k : integer;
-                begin
-                if copy(s,i-2*k+1,k) = copy(s,i-k+1,k) then
-                   begin
-                    exit();
-                   end
-                end
-                """
-        expect = str(Program([FuncDecl(Id(r'calc'),[VarDecl(Id(r'i'),IntType())],[VarDecl(Id(r'k'),IntType())],[If(BinaryOp(r'=',CallExpr(Id(r'copy'),[Id(r's'),BinaryOp(r'+',BinaryOp(r'-',Id(r'i'),BinaryOp(r'*',IntLiteral(2),Id(r'k'))),IntLiteral(1)),Id(r'k')]),CallExpr(Id(r'copy'),[Id(r's'),BinaryOp(r'+',BinaryOp(r'-',Id(r'i'),Id(r'k')),IntLiteral(1)),Id(r'k')])),[CallStmt(Id(r'exit'),[])],[])],BoolType())]))
-
+    def test_built_in_procecdure_putIntLn(self):
+        input = """procedure a(); begin putIntLn();a:=putIntLn(); end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[CallStmt(Id(putIntLn),[]),AssignStmt(Id(a),CallExpr(Id(putIntLn),[]))])])"
         self.assertTrue(TestAST.test(input,expect,341))
-    def test_statement_PROCEDURE_missing_var_declare(self):
-        
-        input = """
-                Var R,S,P:real;
-                pROCEDURE Scalc() ;
-                Begin
-                    Read(R);
-                    S := 3.14 * R * R;
-                    P := 2 * 3.14 * R;
-                    return;
-                End
-                """
-        expect = str(Program([VarDecl(Id(r'R'),FloatType()),VarDecl(Id(r'S'),FloatType()),VarDecl(Id(r'P'),FloatType()),FuncDecl(Id(r'Scalc'),[],[],[CallStmt(Id(r'Read'),[Id(r'R')]),Assign(Id(r'S'),BinaryOp(r'*',BinaryOp(r'*',FloatLiteral(3.14),Id(r'R')),Id(r'R'))),Assign(Id(r'P'),BinaryOp(r'*',BinaryOp(r'*',IntLiteral(2),FloatLiteral(3.14)),Id(r'R'))),Return(None)],VoidType())]))
 
+    def test_built_in_function_getFloat(self):
+        input = """procedure a(); begin getFloat();a:=getFloat(); end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[CallStmt(Id(getFloat),[]),AssignStmt(Id(a),CallExpr(Id(getFloat),[]))])])"
         self.assertTrue(TestAST.test(input,expect,342))
-    
-    def test_statement_mix_complicated_EXPRESSION(self):
-        input = """
-                Var R,S,P:real;
-                pROCEDURE Scalc() ;
-                Begin
-                    Read(R);
-                    S := 3.14 * R * R;
-                    P := 2 * 3.14 * R;
-                    Mul := (S*P) / (S+P);
-                    return Mul;
-                End
-                """
-        expect = str(Program([VarDecl(Id(r'R'),FloatType()),VarDecl(Id(r'S'),FloatType()),VarDecl(Id(r'P'),FloatType()),FuncDecl(Id(r'Scalc'),[],[],[CallStmt(Id(r'Read'),[Id(r'R')]),Assign(Id(r'S'),BinaryOp(r'*',BinaryOp(r'*',FloatLiteral(3.14),Id(r'R')),Id(r'R'))),Assign(Id(r'P'),BinaryOp(r'*',BinaryOp(r'*',IntLiteral(2),FloatLiteral(3.14)),Id(r'R'))),Assign(Id(r'Mul'),BinaryOp(r'/',BinaryOp(r'*',Id(r'S'),Id(r'P')),BinaryOp(r'+',Id(r'S'),Id(r'P')))),Return(Id(r'Mul'))],VoidType())]))
+
+    def test_built_in_procecdure_putFloat(self):
+        input = """procedure a(); begin putFloat();a:=putFloat(); end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[CallStmt(Id(putFloat),[]),AssignStmt(Id(a),CallExpr(Id(putFloat),[]))])])"
         self.assertTrue(TestAST.test(input,expect,343))
-    def test_statement_mix_IF_with_VAR_DECLARE(self):
-        input = """ Function Min(N:Integer) :Integer;
-                Var x,y:Integer;
-                Begin
-                    if x <= y then i := x; else i := y;
-                End"""
-        expect = str(Program([FuncDecl(Id(r'Min'),[VarDecl(Id(r'N'),IntType())],[VarDecl(Id(r'x'),IntType()),VarDecl(Id(r'y'),IntType())],[If(BinaryOp(r'<=',Id(r'x'),Id(r'y')),[Assign(Id(r'i'),Id(r'x'))],[Assign(Id(r'i'),Id(r'y'))])],IntType())]))
 
+    def test_built_in_procecdure_putFloatLn(self):
+        input = """procedure a(); begin putFloatLn();a:=putFloatLn(); end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[CallStmt(Id(putFloatLn),[]),AssignStmt(Id(a),CallExpr(Id(putFloatLn),[]))])])"
         self.assertTrue(TestAST.test(input,expect,344))
-    def test_statement_mix_nested_IF_with_RETURN_and_nested_index_expression(self):
-        input = """
-                procedure main() ;
-                beGin
-                 a[b[2]] := 10;
-                 foo();
-                 if a=b then if c = d then e := f;
-                 else i := 1;
-                 else x := 2 ;
-                 return ;
-                eND
-                """
-        expect = str(Program([FuncDecl(Id(r'main'),[],[],[Assign(ArrayCell(Id(r'a'),ArrayCell(Id(r'b'),IntLiteral(2))),IntLiteral(10)),CallStmt(Id(r'foo'),[]),If(BinaryOp(r'=',Id(r'a'),Id(r'b')),[If(BinaryOp(r'=',Id(r'c'),Id(r'd')),[Assign(Id(r'e'),Id(r'f'))],[Assign(Id(r'i'),IntLiteral(1))])],[Assign(Id(r'x'),IntLiteral(2))]),Return(None)],VoidType())]))
-        
 
+    def test_built_in_procecdure_putBool(self):
+        input = """procedure a(); begin putBool();a:=putBool(); end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[CallStmt(Id(putBool),[]),AssignStmt(Id(a),CallExpr(Id(putBool),[]))])])"
         self.assertTrue(TestAST.test(input,expect,345))
-    def test_statement_mix_IF_with_nested_COBOUND_and_CALL(self):
-        input = """
-                procedure test() ;
-                begin
-	               if a=b then
-	               begin
-		                 b := c ;
-		                 if(e <> f) then foo(a,c) ;
-                    if a=b then if c=d then while (d=e) do
-                   beGin
-                   eND
-	               end
-                end
-                """
-        expect = str(Program([FuncDecl(Id(r'test'),[],[],[If(BinaryOp(r'=',Id(r'a'),Id(r'b')),[Assign(Id(r'b'),Id(r'c')),If(BinaryOp(r'<>',Id(r'e'),Id(r'f')),[CallStmt(Id(r'foo'),[Id(r'a'),Id(r'c')])],[]),If(BinaryOp(r'=',Id(r'a'),Id(r'b')),[If(BinaryOp(r'=',Id(r'c'),Id(r'd')),[While(BinaryOp(r'=',Id(r'd'),Id(r'e')),[])],[])],[])],[])],VoidType())]))
-        
 
+    def test_built_in_procecdure_putBoolLn(self):
+        input = """procedure a(); begin putBoolLn();a:=putBoolLn(); end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[CallStmt(Id(putBoolLn),[]),AssignStmt(Id(a),CallExpr(Id(putBoolLn),[]))])])"
         self.assertTrue(TestAST.test(input,expect,346))
-    def test_statement_mix_VAR_DECLARE_and_PROCEDURE(self):
-        input = """
-                Var name: String;
-                Procedure Main();
-                Begin
-	               (*this is line*)
-	               writeln();//this is new line}
-	               writeln(name);
-	               readln();
-                End
-                """
-        expect = str(Program([VarDecl(Id(r'name'),StringType()),FuncDecl(Id(r'Main'),[],[],[CallStmt(Id(r'writeln'),[]),CallStmt(Id(r'writeln'),[Id(r'name')]),CallStmt(Id(r'readln'),[])],VoidType())]))
-        
 
+    def test_built_in_procecdure_putString(self):
+        input = """procedure a(); begin putString();a:=putString(); end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[CallStmt(Id(putString),[]),AssignStmt(Id(a),CallExpr(Id(putString),[]))])])"
         self.assertTrue(TestAST.test(input,expect,347))
 
-    def test_statement_RETURN_with_EXPRESSION_FUNCCALL(self):
-        
-        input = """
-                function gt(x:integer):integer;
-                begin
-                if x = 0 then
-                 return 1;
-                else
-                 return x*gt(x-1);
-                end
-                """
-        expect = str(Program([FuncDecl(Id(r'gt'),[VarDecl(Id(r'x'),IntType())],[],[If(BinaryOp(r'=',Id(r'x'),IntLiteral(0)),[Return(IntLiteral(1))],[Return(BinaryOp(r'*',Id(r'x'),CallExpr(Id(r'gt'),[BinaryOp(r'-',Id(r'x'),IntLiteral(1))])))])],IntType())])) 
-        
-
+    def test_built_in_procecdure_putStringLn(self):
+        input = """procedure a(); begin putStringLn();a:=putStringLn(); end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[CallStmt(Id(putStringLn),[]),AssignStmt(Id(a),CallExpr(Id(putStringLn),[]))])])"
         self.assertTrue(TestAST.test(input,expect,348))
-    def test_statement_FUNCCALL_as_EXPRESSION(self):
+
+    def test_built_in_procecdure_putLn(self):
+        input = """procedure a(); begin putLn();a:=putLn(); end"""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[CallStmt(Id(putLn),[]),AssignStmt(Id(a),CallExpr(Id(putLn),[]))])])"
+        self.assertTrue(TestAST.test(input,expect,349))
+
+    def test_add_op(self):
         input = """
-                function fibonacy(x: integer): integer;
-                var f1,f2: integer;
-                temp: integer;
-                Begin
-                 if x<=2 then
-                  return 1;
-                 else
-                  temp := fibonacy(x-2)+ fibonacy(x-1);
-                  return temp;
+                procedure bachkhoa();
+                begin
+                    x:=abc+4;
                 end
                 """
-        expect = str(Program([FuncDecl(Id(r'fibonacy'),[VarDecl(Id(r'x'),IntType())],[VarDecl(Id(r'f1'),IntType()),VarDecl(Id(r'f2'),IntType()),VarDecl(Id(r'temp'),IntType())],[If(BinaryOp(r'<=',Id(r'x'),IntLiteral(2)),[Return(IntLiteral(1))],[Assign(Id(r'temp'),BinaryOp(r'+',CallExpr(Id(r'fibonacy'),[BinaryOp(r'-',Id(r'x'),IntLiteral(2))]),CallExpr(Id(r'fibonacy'),[BinaryOp(r'-',Id(r'x'),IntLiteral(1))])))]),Return(Id(r'temp'))],IntType())]))
-        
-
-        self.assertTrue(TestAST.test(input,expect,349))
-    def test_statement_FUNCCALL_as_FUNCCALL_parament(self):
-        input = """function foo(c: real; d: integer): integer;
-                   BEGIN
-                    c := d;
-                    return c;
-                    foo(foo());
-                   END"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'c'),FloatType()),VarDecl(Id(r'd'),IntType())],[],[Assign(Id(r'c'),Id(r'd')),Return(Id(r'c')),CallStmt(Id(r'foo'),[CallExpr(Id(r'foo'),[])])],IntType())])) 
-        
-
+        expect = "Program([FuncDecl(Id(bachkhoa),[],VoidType,[],[AssignStmt(Id(x),BinaryOp(+,Id(abc),IntLiteral(4)))])])"
         self.assertTrue(TestAST.test(input,expect,350))
-    def test_statement_CONTINUE_with_WHILE(self):
-        
-        input = """Procedure testContinue(c: real);
-                   BEgin
-                    while (1) do coNtInUe ;
-                   EnD
-                   """
-        expect = str(Program([FuncDecl(Id(r'testContinue'),[VarDecl(Id(r'c'),FloatType())],[],[While(IntLiteral(1),[Continue()])],VoidType())]))
-        
 
+    def test_mix_program(self):
+        input = """
+        var a,b,c:integer;d,e:integer;
+        procedure a();
+        begin
+            a();
+            w:=w;
+            begin
+                d:=d;
+                opw:=w();
+                wqw:=d()[2];
+                if a then if c then d();
+            end
+            w();
+        end
+        var c,w:real;d:string;q:array[-2 .. 2]of integer;
+        """
+        expect = "Program([VarDecl(Id(a),IntType),VarDecl(Id(b),IntType),VarDecl(Id(c),IntType),VarDecl(Id(d),IntType),VarDecl(Id(e),IntType),FuncDecl(Id(a),[],VoidType,[],[CallStmt(Id(a),[]),AssignStmt(Id(w),Id(w)),AssignStmt(Id(d),Id(d)),AssignStmt(Id(opw),CallExpr(Id(w),[])),AssignStmt(Id(wqw),ArrayCell(CallExpr(Id(d),[]),IntLiteral(2))),If(Id(a),[If(Id(c),[CallStmt(Id(d),[])],[])],[]),CallStmt(Id(w),[])]),VarDecl(Id(c),FloatType),VarDecl(Id(w),FloatType),VarDecl(Id(d),StringType),VarDecl(Id(q),ArrayType(-2,2,IntType))])"
         self.assertTrue(TestAST.test(input,expect,351))
-    def test_statement_CALL_and_RETURN(self):
-        input = """function testCALL(c: real): integer;
-                   BEgin
-                    testCALL(1,a<>1,a[1]);
-                    return 1;
-                   EnD
-                   """
-        expect = str(Program([FuncDecl(Id(r'testCALL'),[VarDecl(Id(r'c'),FloatType())],[],[CallStmt(Id(r'testCALL'),[IntLiteral(1),BinaryOp(r'<>',Id(r'a'),IntLiteral(1)),ArrayCell(Id(r'a'),IntLiteral(1))]),Return(IntLiteral(1))],IntType())]))
-        
 
+    def test_sub_op(self):
+        input = """
+                procedure bethoheo();
+                begin
+                    x:=a-2;
+                end
+                """
+        expect = "Program([FuncDecl(Id(bethoheo),[],VoidType,[],[AssignStmt(Id(x),BinaryOp(-,Id(a),IntLiteral(2)))])])"
         self.assertTrue(TestAST.test(input,expect,352))
-    def test_statement_with_triple_COBOUND(self):
-        
-        input = """
-                Procedure test1() ;
-                BEgin
-	               if a=b then
-	               BEgin
-		                 b := c ;
-		                 if(e <> f) then begin test1(a,c) ; end
-	               EnD
-                EnD
-                """
-        expect = str(Program([FuncDecl(Id(r'test1'),[],[],[If(BinaryOp(r'=',Id(r'a'),Id(r'b')),[Assign(Id(r'b'),Id(r'c')),If(BinaryOp(r'<>',Id(r'e'),Id(r'f')),[CallStmt(Id(r'test1'),[Id(r'a'),Id(r'c')])],[])],[])],VoidType())]))
-        
 
+    def test_vardecl(self):
+        input = """
+        var a:integer;
+        var b:real;
+        var c:string;
+        var d:boolean;
+        """
+        expect = "Program([VarDecl(Id(a),IntType),VarDecl(Id(b),FloatType),VarDecl(Id(c),StringType),VarDecl(Id(d),BoolType)])"
         self.assertTrue(TestAST.test(input,expect,353))
-    def test_statement_MULTI_RETURN(self):
-        
-        input = """
-                function power(x:integer):integer;
-                BEgin
-                if x = 0 then
-                 return 1;
-                else
-                 return x*power(x-1);
-                EnD
-                """
-        expect = str(Program([FuncDecl(Id(r'power'),[VarDecl(Id(r'x'),IntType())],[],[If(BinaryOp(r'=',Id(r'x'),IntLiteral(0)),[Return(IntLiteral(1))],[Return(BinaryOp(r'*',Id(r'x'),CallExpr(Id(r'power'),[BinaryOp(r'-',Id(r'x'),IntLiteral(1))])))])],IntType())]))
-        
 
+    def test_mul_op(self):
+        input = """
+                procedure kimcute();
+                begin
+                    x:=a*2;
+                end
+                """
+        expect = "Program([FuncDecl(Id(kimcute),[],VoidType,[],[AssignStmt(Id(x),BinaryOp(*,Id(a),IntLiteral(2)))])])"
         self.assertTrue(TestAST.test(input,expect,354))
-    def test_statement_more_statement(self):
-        
-        input = """
-                Function test_more_stmt(m,n:integer):integer;
-               
-                 var a: real;
-                  BEgin
-                    begin
-                        for i := 1 to 10 do 
-                        a := a +1;
-                        break;                    
-					end
-                EnD
-                """
-        expect = str(Program([FuncDecl(Id(r'test_more_stmt'),[VarDecl(Id(r'm'),IntType()),VarDecl(Id(r'n'),IntType())],[VarDecl(Id(r'a'),FloatType())],[For(Id(r'i'),IntLiteral(1),IntLiteral(10),True,[Assign(Id(r'a'),BinaryOp(r'+',Id(r'a'),IntLiteral(1)))]),Break()],IntType())]))
-        
 
+    def test_multivar(self):
+        input = """
+        var a,b,c:integer;d,e:integer;
+        var f,g:boolean;h,j:integer;
+        var q,w:string;
+        """
+        expect = "Program([VarDecl(Id(a),IntType),VarDecl(Id(b),IntType),VarDecl(Id(c),IntType),VarDecl(Id(d),IntType),VarDecl(Id(e),IntType),VarDecl(Id(f),BoolType),VarDecl(Id(g),BoolType),VarDecl(Id(h),IntType),VarDecl(Id(j),IntType),VarDecl(Id(q),StringType),VarDecl(Id(w),StringType)])"
         self.assertTrue(TestAST.test(input,expect,355))
-    def test_statement_VAR_DECLARE(self):
-        
-        input = input = """
-                var i: boolean;
-                """
-        expect = str(Program([VarDecl(Id(r'i'),BoolType())]))
-        self.assertTrue(TestAST.test(input,expect,356))
-    def test_statement_mix_FOR_IF_RETURN(self):
-        input = """
-                Function testing(): Boolean;
-                Var Flag:Boolean;
-                    i :Integer;
-                BEgin
-                 Flag:=True;
-                 For  i :=1 to N do
-                 If(A[i] <> A[N-i  +1]) Then
-                 Flag :=False;     
-                 return flag;
-                EnD
-                """
-        expect = str(Program([FuncDecl(Id(r'testing'),[],[VarDecl(Id(r'Flag'),BoolType()),VarDecl(Id(r'i'),IntType())],[Assign(Id(r'Flag'),BooleanLiteral(True)),For(Id(r'i'),IntLiteral(1),Id(r'N'),True,[If(BinaryOp(r'<>',ArrayCell(Id(r'A'),Id(r'i')),ArrayCell(Id(r'A'),BinaryOp(r'+',BinaryOp(r'-',Id(r'N'),Id(r'i')),IntLiteral(1)))),[Assign(Id(r'Flag'),BooleanLiteral(False))],[])]),Return(Id(r'flag'))],BoolType())]))
 
-        self.assertTrue(TestAST.test(input,expect,357))
-    def test_statement_nested_scope(self):
+    def test_div_op(self):
         input = """
-                Function nested_scope(  N :Integer) : Boolean;
-                Var Flag : Boolean;
-                 i :Integer;
-                BEgin
-                 begin
-                 EnD
-                 return Flag;
-                EnD
+                procedure tscute();
+                begin
+                    x:=a/4/6;
+                end
                 """
-        expect = str(Program([FuncDecl(Id(r'nested_scope'),[VarDecl(Id(r'N'),IntType())],[VarDecl(Id(r'Flag'),BoolType()),VarDecl(Id(r'i'),IntType())],[Return(Id(r'Flag'))],BoolType())]))
-        
+        expect = "Program([FuncDecl(Id(tscute),[],VoidType,[],[AssignStmt(Id(x),BinaryOp(/,BinaryOp(/,Id(a),IntLiteral(4)),IntLiteral(6)))])])"
+        self.assertTrue(TestAST.test(input,expect,356))
+
+    def test_array_type(self):
+        input = """
+        var a:array[1 .. 2]of integer;
+        var a:array[-1 .. 2]of integer;
+        var a:array[1 .. -2]of integer;
+        var a:array[-1 .. -2]of integer;
+        """
+        expect = "Program([VarDecl(Id(a),ArrayType(1,2,IntType)),VarDecl(Id(a),ArrayType(-1,2,IntType)),VarDecl(Id(a),ArrayType(1,-2,IntType)),VarDecl(Id(a),ArrayType(-1,-2,IntType))])"
+        self.assertTrue(TestAST.test(input,expect,357))
+
+    def test_intdiv_op(self):
+        input = """
+                procedure linhcute();
+                begin
+                    x:=a div b ;
+                end
+                """
+        expect = "Program([FuncDecl(Id(linhcute),[],VoidType,[],[AssignStmt(Id(x),BinaryOp(div,Id(a),Id(b)))])])"
         self.assertTrue(TestAST.test(input,expect,358))
-    def test_statement_complex_ASSIGN_and_RETURN(self):
-        input = """procedure foo(a,b:integer; c:real);
-        var x,y: real;
-        begin 
-        a := b [10] := foo()[3] := x := 1 ;
-        return;
-        end"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'a'),IntType()),VarDecl(Id(r'b'),IntType()),VarDecl(Id(r'c'),FloatType())],[VarDecl(Id(r'x'),FloatType()),VarDecl(Id(r'y'),FloatType())],[Assign(Id(r'x'),IntLiteral(1)),Assign(ArrayCell(CallExpr(Id(r'foo'),[]),IntLiteral(3)),Id(r'x')),Assign(ArrayCell(Id(r'b'),IntLiteral(10)),ArrayCell(CallExpr(Id(r'foo'),[]),IntLiteral(3))),Assign(Id(r'a'),ArrayCell(Id(r'b'),IntLiteral(10))),Return(None)],VoidType())]))
+
+    def test_mixop_complicate(self):
+        input = """
+        procedure a();
+        begin
+            a:=a+b-2/d*2 and 2 =243516534 div 211 mod 9 or 2;
+        end
+        """
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(Id(a),BinaryOp(=,BinaryOp(-,BinaryOp(+,Id(a),Id(b)),BinaryOp(and,BinaryOp(*,BinaryOp(/,IntLiteral(2),Id(d)),IntLiteral(2)),IntLiteral(2))),BinaryOp(or,BinaryOp(mod,BinaryOp(div,IntLiteral(243516534),IntLiteral(211)),IntLiteral(9)),IntLiteral(2))))])])"
         self.assertTrue(TestAST.test(input,expect,359))
-    def test_statement_ARRAY_DECLARE(self): 
-        input = """procedure foo(a,b:integer; c:real);
-        var x,y: real;
-            z: array[2 .. 3] of integer;
-        begin 
-        x := y + 1;
-        y := z[2];
-        y := y * y;
-        end"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'a'),IntType()),VarDecl(Id(r'b'),IntType()),VarDecl(Id(r'c'),FloatType())],[VarDecl(Id(r'x'),FloatType()),VarDecl(Id(r'y'),FloatType()),VarDecl(Id(r'z'),ArrayType(2,3,IntType()))],[Assign(Id(r'x'),BinaryOp(r'+',Id(r'y'),IntLiteral(1))),Assign(Id(r'y'),ArrayCell(Id(r'z'),IntLiteral(2))),Assign(Id(r'y'),BinaryOp(r'*',Id(r'y'),Id(r'y')))],VoidType())]))
+
+    def test_not_op(self):
+        input = """
+                procedure mat();
+                begin
+                    x:=not b ;
+                end"""
+        expect = "Program([FuncDecl(Id(mat),[],VoidType,[],[AssignStmt(Id(x),UnaryOp(not,Id(b)))])])"
         self.assertTrue(TestAST.test(input,expect,360))
-    def test_statement_FUNCCALL_as_index_express(self): 
-        input = """procedure foo(a,b:integer; c:real);
-        var x,y: real;
-            z: array[2 .. 3] of integer;
-        begin 
-        x := y + 1;
-        x := z[2];
-        foo(x);
-        foo(2)[3+x] := a[b[2]] +3;
-        return foo(x);
-        end"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'a'),IntType()),VarDecl(Id(r'b'),IntType()),VarDecl(Id(r'c'),FloatType())],[VarDecl(Id(r'x'),FloatType()),VarDecl(Id(r'y'),FloatType()),VarDecl(Id(r'z'),ArrayType(2,3,IntType()))],[Assign(Id(r'x'),BinaryOp(r'+',Id(r'y'),IntLiteral(1))),Assign(Id(r'x'),ArrayCell(Id(r'z'),IntLiteral(2))),CallStmt(Id(r'foo'),[Id(r'x')]),Assign(ArrayCell(CallExpr(Id(r'foo'),[IntLiteral(2)]),BinaryOp(r'+',IntLiteral(3),Id(r'x'))),BinaryOp(r'+',ArrayCell(Id(r'a'),ArrayCell(Id(r'b'),IntLiteral(2))),IntLiteral(3))),Return(CallExpr(Id(r'foo'),[Id(r'x')]))],VoidType())]))
+
+    def test_double_not_op(self):
+        input = """
+        procedure a();
+        begin
+            x:=not not b;
+        end
+        """
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(Id(x),UnaryOp(not,UnaryOp(not,Id(b))))])])"
         self.assertTrue(TestAST.test(input,expect,361))
 
-    def test_statement_IF_THEN(self):   
-        input = """procedure foo(a,b:integer; c:real);
-        var x,y: real;
-            z: array[2 .. 3] of integer;
-        begin 
-        if 5>6 then x := y;
-        end"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'a'),IntType()),VarDecl(Id(r'b'),IntType()),VarDecl(Id(r'c'),FloatType())],[VarDecl(Id(r'x'),FloatType()),VarDecl(Id(r'y'),FloatType()),VarDecl(Id(r'z'),ArrayType(2,3,IntType()))],[If(BinaryOp(r'>',IntLiteral(5),IntLiteral(6)),[Assign(Id(r'x'),Id(r'y'))],[])],VoidType())]))
+    def test_mod_op(self):
+        input = """
+                procedure daulong();
+                begin
+                    x:=b mod 2;
+                end
+                """
+        expect = "Program([FuncDecl(Id(daulong),[],VoidType,[],[AssignStmt(Id(x),BinaryOp(mod,Id(b),IntLiteral(2)))])])"
         self.assertTrue(TestAST.test(input,expect,362))
 
-    def test_statement_IF_THEN_ELSE(self):
-        input = """procedure foo(a,b:integer; c:real);
-        var x,y: real;
-            z: array[2 .. 3] of integer;
-        begin 
-        if (5>6) then x := y; else y := x := 1;
-        
-        end"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'a'),IntType()),VarDecl(Id(r'b'),IntType()),VarDecl(Id(r'c'),FloatType())],[VarDecl(Id(r'x'),FloatType()),VarDecl(Id(r'y'),FloatType()),VarDecl(Id(r'z'),ArrayType(2,3,IntType()))],[If(BinaryOp(r'>',IntLiteral(5),IntLiteral(6)),[Assign(Id(r'x'),Id(r'y'))],[Assign(Id(r'x'),IntLiteral(1)),Assign(Id(r'y'),Id(r'x'))])],VoidType())]))
+    def test_triple_not(self):
+        input = """
+        procedure a();
+        begin
+            a:=not not not a;
+        end
+        """
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(Id(a),UnaryOp(not,UnaryOp(not,UnaryOp(not,Id(a)))))])])"
         self.assertTrue(TestAST.test(input,expect,363))
 
-       
-    def test_statement_nested_IF_with_ASSIGN(self):
-        input = """procedure foo(a,b:integer; c:real);
-        var x,y: real;
-            z: array[2 .. 3] of integer;
-        begin 
-        if (5>6) then x := y; else 
-            if (true) then y:=x;
-        x := z[2];
-        end"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'a'),IntType()),VarDecl(Id(r'b'),IntType()),VarDecl(Id(r'c'),FloatType())],[VarDecl(Id(r'x'),FloatType()),VarDecl(Id(r'y'),FloatType()),VarDecl(Id(r'z'),ArrayType(2,3,IntType()))],[If(BinaryOp(r'>',IntLiteral(5),IntLiteral(6)),[Assign(Id(r'x'),Id(r'y'))],[If(BooleanLiteral(True),[Assign(Id(r'y'),Id(r'x'))],[])]),Assign(Id(r'x'),ArrayCell(Id(r'z'),IntLiteral(2)))],VoidType())]))
+    def test_or_op(self):
+        input = """
+                procedure radio();
+                begin
+                    x:= 3 or 2;
+                end
+                """
+        expect = "Program([FuncDecl(Id(radio),[],VoidType,[],[AssignStmt(Id(x),BinaryOp(or,IntLiteral(3),IntLiteral(2)))])])"
         self.assertTrue(TestAST.test(input,expect,364))
-    def test_ARRAY_DECLARE(self):
-        """array type"""
-        input = """var d:array [ 1 .. 5 ] of integer;"""
-        expect = str(Program([VarDecl(Id(r'd'),ArrayType(1,5,IntType()))]))
+
+    def test_or_assoc(self):
+        input = """
+        procedure a();
+        begin
+            if d or d() or d[d()] then d();
+        end
+        """
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[If(BinaryOp(or,BinaryOp(or,Id(d),CallExpr(Id(d),[])),ArrayCell(Id(d),CallExpr(Id(d),[]))),[CallStmt(Id(d),[])],[])])])"
         self.assertTrue(TestAST.test(input,expect,365))
-    def test_VAR_DECLARE_with_ARRAY(self):    
-        input = """var d:array [1 .. 5] of integer; a,b,c: integer; e,f: real;"""
-        expect = str(Program([VarDecl(Id(r'd'),ArrayType(1,5,IntType())),VarDecl(Id(r'a'),IntType()),VarDecl(Id(r'b'),IntType()),VarDecl(Id(r'c'),IntType()),VarDecl(Id(r'e'),FloatType()),VarDecl(Id(r'f'),FloatType())]))
+
+    def test_and_op(self):
+        input = """
+                procedure thatbat();
+                begin
+                    x:= a and b;
+                end
+                """
+        expect = "Program([FuncDecl(Id(thatbat),[],VoidType,[],[AssignStmt(Id(x),BinaryOp(and,Id(a),Id(b)))])])"
         self.assertTrue(TestAST.test(input,expect,366))
-    def test_array_DECLARE_with_ESCAPE(self):
-        input = """var d:array [1 .. 5] of integer;\n a,b,c: integer;\n e,f: real;"""
-        expect = str(Program([VarDecl(Id(r'd'),ArrayType(1,5,IntType())),VarDecl(Id(r'a'),IntType()),VarDecl(Id(r'b'),IntType()),VarDecl(Id(r'c'),IntType()),VarDecl(Id(r'e'),FloatType()),VarDecl(Id(r'f'),FloatType())]))
+
+    def test_multi_not(self):
+        input = """
+        procedure a();
+        begin
+            x:=a + not not not not not not not a;
+        end
+        """
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(Id(x),BinaryOp(+,Id(a),UnaryOp(not,UnaryOp(not,UnaryOp(not,UnaryOp(not,UnaryOp(not,UnaryOp(not,UnaryOp(not,Id(a))))))))))])])"
         self.assertTrue(TestAST.test(input,expect,367))
-    def Atest_array_DECLARE_with_ESCAPEs(self):
-        input = """ "2"[4]:=d;"""
-        expect = str(Program([FuncDecl(Id(foo),[],VoidType(),[],[While(BooleanLiteral(True),[CallStmt(Id(gogo),[])])])]))
+
+    def test_less_op(self):
+        input = """
+                procedure hgjd();
+                begin
+                    x:= a < b;
+                end
+                """
+        expect = "Program([FuncDecl(Id(hgjd),[],VoidType,[],[AssignStmt(Id(x),BinaryOp(<,Id(a),Id(b)))])])"
         self.assertTrue(TestAST.test(input,expect,368))
-    def test_array_DECLARE_with_ESCAPEss(self):
+
+    def test_another_if(self):
         input = """
-        procedure foo(a,b:integer; c:real);
+        procedure a();
         begin
-        if (b>=a) and (b>=c) then max:=b; end"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'a'),IntType()),VarDecl(Id(r'b'),IntType()),VarDecl(Id(r'c'),FloatType())],[],[If(BinaryOp(r'and',BinaryOp(r'>=',Id(r'b'),Id(r'a')),BinaryOp(r'>=',Id(r'b'),Id(r'c'))),[Assign(Id(r'max'),Id(r'b'))],[])],VoidType())]))
-        self.assertTrue(TestAST.test(input,expect,369))
-    def test_nested_compound(self):
-        input = """
-        procedure foo(a,b:integer; c:real);
-        begin
-        begin end end"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'a'),IntType()),VarDecl(Id(r'b'),IntType()),VarDecl(Id(r'c'),FloatType())],[],[],VoidType())]))
-        self.assertTrue(TestAST.test(input,expect,370))
-    def test_assign_with_complex_express(self):
-        input = """
-        procedure foo(a,b:integer; c:real);
-        begin
-        a := b :=c := x + 2 * 3 end"""
-        expect = str(Program([FuncDecl(Id(r'foo'),[VarDecl(Id(r'a'),IntType()),VarDecl(Id(r'b'),IntType()),VarDecl(Id(r'c'),FloatType())],[],[Assign(Id(r'c'),BinaryOp(r'+',Id(r'x'),BinaryOp(r'*',IntLiteral(2),IntLiteral(3)))),Assign(Id(r'b'),Id(r'c')),Assign(Id(r'a'),Id(r'b'))],VoidType())]))
-        self.assertTrue(TestAST.test(input,expect,371))
-    def test_assign_more_complex(self):
-        input = """
-        function foo(n:integer;x:array[1 .. 10] of integer):array [1 .. 10] of integer;
-        var b:array[1 .. 10] of integer;
-        begin
-            with i:integer; do 
-                if n > 0 then
-                    for i := n downto a[n] do begin
-                        b[i] := a[i] + x[i];
-                        if i = a[x[i]] then
-                            return x;
-                        else
-                            continue;
-                    end
-                else
-                    for i := 1 to n mod a[n] do begin
-                        b[i] := a[i] and then x[i] or else b[i];
-                        if a[x[i]] then
-                            return x;
-                        else
-                            break;
-                    end
-            return foo(foo(x),a[x[n]]);
+            if a=2 then
+                if a=2 then c:=7;
+                else w:=3;
         end
-        procedure main(); 
-        var i:integer;
-        begin
-            i := getIntLn();
-            foo(a,i);
-            with i:integer; do
-                for i := 1 to 10 do
-                    putIntLn(a[i]);
-        end
-        var a:array[1 .. 10] of integer;
 
         """
-        expect = ""
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[If(BinaryOp(=,Id(a),IntLiteral(2)),[If(BinaryOp(=,Id(a),IntLiteral(2)),[AssignStmt(Id(c),IntLiteral(7))],[AssignStmt(Id(w),IntLiteral(3))])],[])])])"
+        self.assertTrue(TestAST.test(input,expect,369))
+
+    def test_greater_op(self):
+        input = """
+                procedure abx();
+                begin
+                    a:=2;
+                    b:=4;
+                    x:= w > b;
+                end
+                """
+        expect = "Program([FuncDecl(Id(abx),[],VoidType,[],[AssignStmt(Id(a),IntLiteral(2)),AssignStmt(Id(b),IntLiteral(4)),AssignStmt(Id(x),BinaryOp(>,Id(w),Id(b)))])])"
+        self.assertTrue(TestAST.test(input,expect,370))
+
+    def test_float_literal(self):
+        input = """
+        procedure a();
+        begin
+            a:=2.3;
+            b:=4.5E2;
+            c1:=-3.2e-2;
+            c2:=-3.2E-5;
+            c3:= 3.2e-5;
+            c4:= 3.2e-2;
+            d:=.2E3;
+            e:=2.;
+            f:=2.E2;
+            g:=-.9;
+            pi:=3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303819644288109756659334461284756482337867831652712019091456485669234603486104543266482133936072602491412737245870066063155881748815209209628292540917153643678925903600113305305488204665213841469519415116094330572703657595919530921861173819326117931051185480744623799627495673518857527248912279381830119491298336733624406566430860213949463952247371907021798609437027705392171762931767523846748184676694051320005681271452635608277857713427577896091736371787214684409012249534301465495853710507922796892589235420199561121290219608640344181598136297747713099605187072113499999983729780499510597317328160963185950244594553469083026425223082533446850352619311881710100031378387528865875332083814206171776691473035982534904287554687311595628638823537875937519577818577805321712268066130019278766111959092164201989;
+        end
+        """
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(Id(a),FloatLiteral(2.3)),AssignStmt(Id(b),FloatLiteral(450.0)),AssignStmt(Id(c1),UnaryOp(-,FloatLiteral(0.032))),AssignStmt(Id(c2),UnaryOp(-,FloatLiteral(3.2e-05))),AssignStmt(Id(c3),FloatLiteral(3.2e-05)),AssignStmt(Id(c4),FloatLiteral(0.032)),AssignStmt(Id(d),FloatLiteral(200.0)),AssignStmt(Id(e),FloatLiteral(2.0)),AssignStmt(Id(f),FloatLiteral(200.0)),AssignStmt(Id(g),UnaryOp(-,FloatLiteral(0.9))),AssignStmt(Id(pi),FloatLiteral(3.141592653589793))])])"
+        self.assertTrue(TestAST.test(input,expect,371))
+
+    def test_notEqual_op(self):
+        input = """
+                procedure hahaha();
+                begin
+                    a:=b;
+                    b:=b<2;
+                    x:= a <> b;
+                end
+                """
+        expect = "Program([FuncDecl(Id(hahaha),[],VoidType,[],[AssignStmt(Id(a),Id(b)),AssignStmt(Id(b),BinaryOp(<,Id(b),IntLiteral(2))),AssignStmt(Id(x),BinaryOp(<>,Id(a),Id(b)))])])"
         self.assertTrue(TestAST.test(input,expect,372))
+
+    def test_notEqual_op_error(self):
+        input = """
+        procedure a();
+        begin
+            a:=f<>r and then b;
+        end
+        """
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(Id(a),BinaryOp(andthen,BinaryOp(<>,Id(f),Id(r)),Id(b)))])])"
+        self.assertTrue(TestAST.test(input,expect,373))
+
+    def test_equal_op(self):
+        input = """
+                procedure main();
+                begin
+                    a:=9=b;
+                    b:=b=2;
+                    x:= a = 2 + b;
+                end 
+                """
+        expect = "Program([FuncDecl(Id(main),[],VoidType,[],[AssignStmt(Id(a),BinaryOp(=,IntLiteral(9),Id(b))),AssignStmt(Id(b),BinaryOp(=,Id(b),IntLiteral(2))),AssignStmt(Id(x),BinaryOp(=,Id(a),BinaryOp(+,IntLiteral(2),Id(b))))])])"
+        self.assertTrue(TestAST.test(input,expect,374))
+
+    def test_complex_program(self):
+        input = """
+        VAR First,  Second, Left, Right: BOOLEAN;
+        PROCEDURE  printBo2ol(Val: BOOLEAN);
+        BEGIN
+        IF Val THEN
+        print("TRUE ");
+        ELSE
+        print("FALSE ");
+        END { printBool  }
+        PROCEDURE Main();
+        BEGIN
+        { print Header }
+        print("Proof  of DeMorgan theorem ");
+        print();
+        print("First  Second Left Right ");
+        print("-----  ------ ----- ----- ");
+        { Loop through  all truth value combinations }
+        FOR f :=  FALSE TO TRUE DO
+        FOR g :=  FALSE TO TRUE DO BEGIN
+        { print out  Input values of First, Second }
+        printBool(2);
+        printBool(e);
+        { Separate Input  values from the output }
+        print(" ");
+        d := (NOT  e) div (NOT 2);
+        w := NOT(e mod 2);
+        { print out the  new values of Left, Right }
+        printBool(2);
+        printBool(e);
+        print();
+        END { Inner FOR  }
+        END { TruthTable2  }
+        """
+        expect = "Program([VarDecl(Id(First),BoolType),VarDecl(Id(Second),BoolType),VarDecl(Id(Left),BoolType),VarDecl(Id(Right),BoolType),FuncDecl(Id(printBo2ol),[VarDecl(Id(Val),BoolType)],VoidType,[],[If(Id(Val),[CallStmt(Id(print),[StringLiteral(TRUE )])],[CallStmt(Id(print),[StringLiteral(FALSE )])])]),FuncDecl(Id(Main),[],VoidType,[],[CallStmt(Id(print),[StringLiteral(Proof  of DeMorgan theorem )]),CallStmt(Id(print),[]),CallStmt(Id(print),[StringLiteral(First  Second Left Right )]),CallStmt(Id(print),[StringLiteral(-----  ------ ----- ----- )]),For(Id(f),BooleanLiteral(False),BooleanLiteral(True),True,[For(Id(g),BooleanLiteral(False),BooleanLiteral(True),True,[CallStmt(Id(printBool),[IntLiteral(2)]),CallStmt(Id(printBool),[Id(e)]),CallStmt(Id(print),[StringLiteral( )]),AssignStmt(Id(d),BinaryOp(div,UnaryOp(NOT,Id(e)),UnaryOp(NOT,IntLiteral(2)))),AssignStmt(Id(w),UnaryOp(NOT,BinaryOp(mod,Id(e),IntLiteral(2)))),CallStmt(Id(printBool),[IntLiteral(2)]),CallStmt(Id(printBool),[Id(e)]),CallStmt(Id(print),[])])])])])"
+        self.assertTrue(TestAST.test(input,expect,375))
+
+    def test_lessOrEqual_op(self):
+        input = """
+                procedure chas();
+                begin
+                    a:=4 +  b;
+                    b:=b=2;
+                    x:= n<=b;
+                end 
+                """
+        expect = "Program([FuncDecl(Id(chas),[],VoidType,[],[AssignStmt(Id(a),BinaryOp(+,IntLiteral(4),Id(b))),AssignStmt(Id(b),BinaryOp(=,Id(b),IntLiteral(2))),AssignStmt(Id(x),BinaryOp(<=,Id(n),Id(b)))])])"
+        self.assertTrue(TestAST.test(input,expect,376))
+
+    def test_lessOrEqual_op_error(self):
+        input = """
+        procedure foo(a, b: integer ; c: real) ;
+            BEGIN
+                with a , b : integer ; c : array [1 .. 2] of real ; do
+                d := c [a] + b ;
+            END
+        """
+        expect = "Program([FuncDecl(Id(foo),[VarDecl(Id(a),IntType),VarDecl(Id(b),IntType),VarDecl(Id(c),FloatType)],VoidType,[],[With([VarDecl(Id(a),IntType),VarDecl(Id(b),IntType),VarDecl(Id(c),ArrayType(1,2,FloatType))],[AssignStmt(Id(d),BinaryOp(+,ArrayCell(Id(c),Id(a)),Id(b)))])])])"
+        self.assertTrue(TestAST.test(input,expect,377))
+
+    def test_greaterOrEqual_op(self):
+        input = """
+                procedure sua();
+                begin
+                    a:=man;
+                    b:=women;
+                    x:= a >= b ;
+                end
+                """
+        expect = "Program([FuncDecl(Id(sua),[],VoidType,[],[AssignStmt(Id(a),Id(man)),AssignStmt(Id(b),Id(women)),AssignStmt(Id(x),BinaryOp(>=,Id(a),Id(b)))])])"
+        self.assertTrue(TestAST.test(input,expect,378))
+
+    def test_greaterOrEqual_op_error(self):
+        input = """
+        function foo(n: integer; m:integer): integer;
+        begin
+            for i:=1 downto n do
+                for j := i to n -1 do
+                begin
+                    s := s + 1;
+                    if(i = (m+n)/2) then s:=s-1;
+                end
+        end
+        """
+        expect = "Program([FuncDecl(Id(foo),[VarDecl(Id(n),IntType),VarDecl(Id(m),IntType)],IntType,[],[For(Id(i),IntLiteral(1),Id(n),False,[For(Id(j),Id(i),BinaryOp(-,Id(n),IntLiteral(1)),True,[AssignStmt(Id(s),BinaryOp(+,Id(s),IntLiteral(1))),If(BinaryOp(=,Id(i),BinaryOp(/,BinaryOp(+,Id(m),Id(n)),IntLiteral(2))),[AssignStmt(Id(s),BinaryOp(-,Id(s),IntLiteral(1)))],[])])])])])"
+        self.assertTrue(TestAST.test(input,expect,379))
+
+    def test_assign_op(self):
+        input = """
+                procedure sah();
+                begin
+                    a:=1;
+                    b:=2;
+                    x:=a+b ;
+                end
+                """
+        expect = "Program([FuncDecl(Id(sah),[],VoidType,[],[AssignStmt(Id(a),IntLiteral(1)),AssignStmt(Id(b),IntLiteral(2)),AssignStmt(Id(x),BinaryOp(+,Id(a),Id(b)))])])"
+        self.assertTrue(TestAST.test(input,expect,380))
+
+    def test_assign_op_complex(self):
+        input = """
+        procedure a();
+        begin
+            a:=d:=e:=w()[2]:=d[1+d()]:=u(u[3]);
+        end
+        """
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(ArrayCell(Id(d),BinaryOp(+,IntLiteral(1),CallExpr(Id(d),[]))),CallExpr(Id(u),[ArrayCell(Id(u),IntLiteral(3))])),AssignStmt(ArrayCell(CallExpr(Id(w),[]),IntLiteral(2)),ArrayCell(Id(d),BinaryOp(+,IntLiteral(1),CallExpr(Id(d),[])))),AssignStmt(Id(e),ArrayCell(CallExpr(Id(w),[]),IntLiteral(2))),AssignStmt(Id(d),Id(e)),AssignStmt(Id(a),Id(d))])])"
+        self.assertTrue(TestAST.test(input,expect,381))
+
+    def test_index_op(self):
+        input = """
+                procedure suag();
+                begin
+                    a:=1;
+                    b:=2;
+                    foo(2)[3+x] := a[b[2]] +3;
+                end
+                """
+        expect = "Program([FuncDecl(Id(suag),[],VoidType,[],[AssignStmt(Id(a),IntLiteral(1)),AssignStmt(Id(b),IntLiteral(2)),AssignStmt(ArrayCell(CallExpr(Id(foo),[IntLiteral(2)]),BinaryOp(+,IntLiteral(3),Id(x))),BinaryOp(+,ArrayCell(Id(a),ArrayCell(Id(b),IntLiteral(2))),IntLiteral(3)))])])"
+        self.assertTrue(TestAST.test(input,expect,382))
+
+    def test_index_op_compicate(self):
+        input = """
+                procedure a();
+        begin
+            a[1[2[t]]]:=abbb(w34[2[5]])[wete[0]];
+        end
+
+        """
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(ArrayCell(Id(a),ArrayCell(IntLiteral(1),ArrayCell(IntLiteral(2),Id(t)))),ArrayCell(CallExpr(Id(abbb),[ArrayCell(Id(w34),ArrayCell(IntLiteral(2),IntLiteral(5)))]),ArrayCell(Id(wete),IntLiteral(0))))])])"
+        self.assertTrue(TestAST.test(input,expect,383))
+
+    def test_index_op_complex(self):
+        input = """
+                procedure a();
+        begin
+            jkha(w[22]+d[2]+d)[d23t1[2[t]]]:=thk(f[f+w()[f]])[2[sk+g()]];
+        end
+        """
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(ArrayCell(CallExpr(Id(jkha),[BinaryOp(+,BinaryOp(+,ArrayCell(Id(w),IntLiteral(22)),ArrayCell(Id(d),IntLiteral(2))),Id(d))]),ArrayCell(Id(d23t1),ArrayCell(IntLiteral(2),Id(t)))),ArrayCell(CallExpr(Id(thk),[ArrayCell(Id(f),BinaryOp(+,Id(f),ArrayCell(CallExpr(Id(w),[]),Id(f))))]),ArrayCell(IntLiteral(2),BinaryOp(+,Id(sk),CallExpr(Id(g),[])))))])])"
+        self.assertTrue(TestAST.test(input,expect,384))
+
+    def test_bracket(self):
+        input = """
+                procedure uux();
+                begin
+                    m:=m+(3-4)*2;
+                end
+                """
+        expect = "Program([FuncDecl(Id(uux),[],VoidType,[],[AssignStmt(Id(m),BinaryOp(+,Id(m),BinaryOp(*,BinaryOp(-,IntLiteral(3),IntLiteral(4)),IntLiteral(2))))])])"
+        self.assertTrue(TestAST.test(input,expect,385))
+
+    def test_bracket_complicate(self):
+        input = """
+        procedure a();
+        begin
+            a:=b()+8+2*(e+3)+2/(2 and 2);
+        end
+        """
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(Id(a),BinaryOp(+,BinaryOp(+,BinaryOp(+,CallExpr(Id(b),[]),IntLiteral(8)),BinaryOp(*,IntLiteral(2),BinaryOp(+,Id(e),IntLiteral(3)))),BinaryOp(/,IntLiteral(2),BinaryOp(and,IntLiteral(2),IntLiteral(2)))))])])"
+        self.assertTrue(TestAST.test(input,expect,386))
+
+    def test_bracket_complex(self):
+        input = """
+                procedure a();
+        begin
+            if i()-4+5 and 3 and then 2 or else 4<2 mod 6 then a:=true;
+        end
+        """
+        expect = "Program([FuncDecl(Id(a),[],VoidType,[],[If(BinaryOp(orelse,BinaryOp(andthen,BinaryOp(+,BinaryOp(-,CallExpr(Id(i),[]),IntLiteral(4)),BinaryOp(and,IntLiteral(5),IntLiteral(3))),IntLiteral(2)),BinaryOp(<,IntLiteral(4),BinaryOp(mod,IntLiteral(2),IntLiteral(6)))),[AssignStmt(Id(a),BooleanLiteral(True))],[])])])"
+        self.assertTrue(TestAST.test(input,expect,387))
+
+    def test_mixOp1(self):
+        input = """
+                procedure urffss();
+                begin
+                    w:=(5+6*(8-32)<5) and (23>=432);
+                    d:= (2=3) and (7*5 or 0);
+                end
+                """
+        expect = "Program([FuncDecl(Id(urffss),[],VoidType,[],[AssignStmt(Id(w),BinaryOp(and,BinaryOp(<,BinaryOp(+,IntLiteral(5),BinaryOp(*,IntLiteral(6),BinaryOp(-,IntLiteral(8),IntLiteral(32)))),IntLiteral(5)),BinaryOp(>=,IntLiteral(23),IntLiteral(432)))),AssignStmt(Id(d),BinaryOp(and,BinaryOp(=,IntLiteral(2),IntLiteral(3)),BinaryOp(or,BinaryOp(*,IntLiteral(7),IntLiteral(5)),IntLiteral(0))))])])"
+        self.assertTrue(TestAST.test(input,expect,388))
+
+    def test_mixOp2(self):
+        input = """
+                procedure yrc();
+                begin
+                    foo(a+94<5)[x>=6]:= 9 div 4 + 3 mod 2;
+                end
+                """
+        expect = "Program([FuncDecl(Id(yrc),[],VoidType,[],[AssignStmt(ArrayCell(CallExpr(Id(foo),[BinaryOp(<,BinaryOp(+,Id(a),IntLiteral(94)),IntLiteral(5))]),BinaryOp(>=,Id(x),IntLiteral(6))),BinaryOp(+,BinaryOp(div,IntLiteral(9),IntLiteral(4)),BinaryOp(mod,IntLiteral(3),IntLiteral(2))))])])"
+        self.assertTrue(TestAST.test(input,expect,389))
+
+    def test_mixOp3(self):
+        input = """
+                procedure cub();
+                begin
+                    p:=(a+b+c)/2;
+                    d:=p+3;
+                    a:= 1<d;
+                end
+                """
+        expect = "Program([FuncDecl(Id(cub),[],VoidType,[],[AssignStmt(Id(p),BinaryOp(/,BinaryOp(+,BinaryOp(+,Id(a),Id(b)),Id(c)),IntLiteral(2))),AssignStmt(Id(d),BinaryOp(+,Id(p),IntLiteral(3))),AssignStmt(Id(a),BinaryOp(<,IntLiteral(1),Id(d)))])])"
+        self.assertTrue(TestAST.test(input,expect,390))
+
+    def test_mixOp4(self):
+        input = """
+                procedure tum();
+                begin
+                    h:= a and b or c + not b;
+                end
+                """
+        expect = "Program([FuncDecl(Id(tum),[],VoidType,[],[AssignStmt(Id(h),BinaryOp(+,BinaryOp(or,BinaryOp(and,Id(a),Id(b)),Id(c)),UnaryOp(not,Id(b))))])])"
+        self.assertTrue(TestAST.test(input,expect,391))
+
+    def test_mixOp5(self):
+        input = """
+                procedure nancy();
+                begin
+                    d:= not a and not b or not c +33*(93<3);
+                end
+                """
+        expect = "Program([FuncDecl(Id(nancy),[],VoidType,[],[AssignStmt(Id(d),BinaryOp(+,BinaryOp(or,BinaryOp(and,UnaryOp(not,Id(a)),UnaryOp(not,Id(b))),UnaryOp(not,Id(c))),BinaryOp(*,IntLiteral(33),BinaryOp(<,IntLiteral(93),IntLiteral(3)))))])])"
+        self.assertTrue(TestAST.test(input,expect,392))
+
+    def test_some_function(self):
+        input = """
+        function IsUnwantedComponent( AClassName: string;AComponentSkipList: string): Boolean;
+        var
+          I: Integer;
+        begin
+          Result := False;
+          if Assigned(AComponentSkipList) then
+            for I := 0 to AComponentSkipListCount - 1 do
+              if SameText(AClassName, AComponentSkipList[I]) then
+              begin
+                Result := True;
+                Break;
+              end
+        end
+        """
+        expect = "Program([FuncDecl(Id(IsUnwantedComponent),[VarDecl(Id(AClassName),StringType),VarDecl(Id(AComponentSkipList),StringType)],BoolType,[VarDecl(Id(I),IntType)],[AssignStmt(Id(Result),BooleanLiteral(False)),If(CallExpr(Id(Assigned),[Id(AComponentSkipList)]),[For(Id(I),IntLiteral(0),BinaryOp(-,Id(AComponentSkipListCount),IntLiteral(1)),True,[If(CallExpr(Id(SameText),[Id(AClassName),ArrayCell(Id(AComponentSkipList),Id(I))]),[AssignStmt(Id(Result),BooleanLiteral(True)),Break],[])])],[])])])"
+        self.assertTrue(TestAST.test(input,expect,393))
+
+    def test_xi_dau(self):
+        input = """procedure xidau();begin chan_xi_dau(); end"""
+        expect = "Program([FuncDecl(Id(xidau),[],VoidType,[],[CallStmt(Id(chan_xi_dau),[])])])"
+        self.assertTrue(TestAST.test(input,expect,394))
+
+    def test_mixOp_assoc(self):
+        input = """
+                procedure bee();
+                begin
+                    x:= 3*x-4*a +(2-5)*8 and true;
+                end
+                """
+        expect = "Program([FuncDecl(Id(bee),[],VoidType,[],[AssignStmt(Id(x),BinaryOp(+,BinaryOp(-,BinaryOp(*,IntLiteral(3),Id(x)),BinaryOp(*,IntLiteral(4),Id(a))),BinaryOp(and,BinaryOp(*,BinaryOp(-,IntLiteral(2),IntLiteral(5)),IntLiteral(8)),BooleanLiteral(True))))])])"
+        self.assertTrue(TestAST.test(input,expect,395))
+
+    def test_gau_gau_gau(self):
+        input = """
+        procedure dog();
+        var gau:integer;
+        begin
+            gau:=gaugaugau()+gaugau();
+        end
+        """
+        expect = "Program([FuncDecl(Id(dog),[],VoidType,[VarDecl(Id(gau),IntType)],[AssignStmt(Id(gau),BinaryOp(+,CallExpr(Id(gaugaugau),[]),CallExpr(Id(gaugau),[])))])])"
+        self.assertTrue(TestAST.test(input,expect,396))
+
+    def test_meo_meo_meo(self):
+        input = """
+        procedure meo();
+        var trymrsugasvatdwad:integer;
+        begin
+            minhbatchuocloaimeokeunha("meomeomeo");
+            if argv[1]="gaugaugau" then print("Keu sai roi, keu meo meo meo di");
+            else print("gioi qua gioi qua");
+        end
+        """
+        expect = "Program([FuncDecl(Id(meo),[],VoidType,[VarDecl(Id(trymrsugasvatdwad),IntType)],[CallStmt(Id(minhbatchuocloaimeokeunha),[StringLiteral(meomeomeo)]),If(BinaryOp(=,ArrayCell(Id(argv),IntLiteral(1)),StringLiteral(gaugaugau)),[CallStmt(Id(print),[StringLiteral(Keu sai roi, keu meo meo meo di)])],[CallStmt(Id(print),[StringLiteral(gioi qua gioi qua)])])])])"
+        self.assertTrue(TestAST.test(input,expect,397))
+
+    def test_literal(self):
+        input = """
+                procedure viva();
+                begin
+                    n:= 12*e10*4+4E-13;
+                end
+                """
+        expect = "Program([FuncDecl(Id(viva),[],VoidType,[],[AssignStmt(Id(n),BinaryOp(+,BinaryOp(*,BinaryOp(*,IntLiteral(12),Id(e10)),IntLiteral(4)),FloatLiteral(4e-13)))])])"
+        self.assertTrue(TestAST.test(input,expect,398))
+
+    def test_literal_error(self):
+        input = """
+        procedure a(realvar:real);
+        var skufe:integer;
+        begin
+            a:=5+a(1,2,3);
+        end
+        """
+        expect = "Program([FuncDecl(Id(a),[VarDecl(Id(realvar),FloatType)],VoidType,[VarDecl(Id(skufe),IntType)],[AssignStmt(Id(a),BinaryOp(+,IntLiteral(5),CallExpr(Id(a),[IntLiteral(1),IntLiteral(2),IntLiteral(3)])))])])"
+        self.assertTrue(TestAST.test(input,expect,399))

@@ -1,1 +1,1 @@
-Program([VarDecl(Id(i),BoolType)])
+Program([FuncDecl(Id(tscute),[],VoidType,[],[AssignStmt(Id(x),BinaryOp(/,BinaryOp(/,Id(a),IntLiteral(4)),IntLiteral(6)))])])

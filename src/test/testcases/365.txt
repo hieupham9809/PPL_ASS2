@@ -1,1 +1,6 @@
-var d:array [ 1 .. 5 ] of integer;
+
+        procedure a();
+        begin
+            if d or d() or d[d()] then d();
+        end
+        

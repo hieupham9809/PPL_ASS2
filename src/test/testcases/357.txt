@@ -1,12 +1,6 @@
 
-                Function testing(): Boolean;
-                Var Flag:Boolean;
-                    i :Integer;
-                BEgin
-                 Flag:=True;
-                 For  i :=1 to N do
-                 If(A[i] <> A[N-i  +1]) Then
-                 Flag :=False;     
-                 return flag;
-                EnD
-                
+        var a:array[1 .. 2]of integer;
+        var a:array[-1 .. 2]of integer;
+        var a:array[1 .. -2]of integer;
+        var a:array[-1 .. -2]of integer;
+        

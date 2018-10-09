@@ -1,1 +1,1 @@
-Program([VarDecl(Id(a),ArrayType(1,2,IntType)),VarDecl(Id(b),ArrayType(1,2,IntType)),VarDecl(Id(c),ArrayType(1,2,IntType))])
+Program([FuncDecl(Id(foo),[VarDecl(Id(n),IntType),VarDecl(Id(m),IntType)],IntType,[],[For(Id(i),IntLiteral(1),Id(n),False,[For(Id(j),Id(i),BinaryOp(-,Id(n),IntLiteral(1)),True,[AssignStmt(Id(s),BinaryOp(+,Id(s),IntLiteral(1))),If(BinaryOp(=,Id(i),BinaryOp(/,BinaryOp(+,Id(m),Id(n)),IntLiteral(2))),[AssignStmt(Id(s),BinaryOp(-,Id(s),IntLiteral(1)))],[])])])])])

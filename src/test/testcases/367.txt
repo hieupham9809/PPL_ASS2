@@ -1,3 +1,6 @@
-var d:array [1 .. 5] of integer;
- a,b,c: integer;
- e,f: real;
+
+        procedure a();
+        begin
+            x:=a + not not not not not not not a;
+        end
+        

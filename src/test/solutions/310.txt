@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(ASSIGN_with_FUNCCALL),[],VoidType(),[VarDecl(Id(x),FloatType),VarDecl(Id(y),FloatType),VarDecl(Id(z),FloatType)],[AssignStmt(Id(a),StringLiteral(char)),AssignStmt(Id(b),CallExpr(Id(func),[IntLiteral(1),BinaryOp(+,Id(a),IntLiteral(11))]))])])
+Program([FuncDecl(Id(try),[],IntType,[],[CallStmt(Id(try),[])])])

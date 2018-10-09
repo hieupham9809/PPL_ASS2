@@ -1,9 +1,1 @@
-
-            procedure foo();
-            begin
-                while trUE do 
-                begin
-                    bar();
-                end
-            end
-        
+procedure a();begin a:=5.3;end 

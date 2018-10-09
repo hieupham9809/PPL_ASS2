@@ -1,5 +1,6 @@
 
-procedure foo();
-begin
-    with i: integer; do ok();
-end
+        procedure a();
+        begin
+            a:=f<>r and then b;
+        end
+        

@@ -1,8 +1,1 @@
-pROCEDURE WITH_with_COBOUND(c: real) ;
-                   BEGIN
-                    with a , b : integer ; c : array [1 .. 2] of real ; do begin
-                    a := c[a] + b ;
-                    foo();WITH_with_COBOUND(a,b,c);
-
-                    end
-                   END
+procedure a(); begin a:=2[2]:=e:=wkk(33[32])[1]:=2=2; end

@@ -1,9 +1,6 @@
 
-procedure foo();
-var a: real;
-begin
-    While i < 1 do begin
-        i := i+1;
-        if i = 1 then i := i - 1;
-    end
-end
+                procedure a();
+        begin
+            if i()-4+5 and 3 and then 2 or else 4<2 mod 6 then a:=true;
+        end
+        

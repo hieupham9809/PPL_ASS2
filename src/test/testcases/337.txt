@@ -1,9 +1,1 @@
-
-                PROCEDURE main() ;
-                beGin
-                 if a=b then 
-                 if c = d then e := f;
-                 else i := 1;
-                 else x := 2 ;
-                eND
-                
+function a():integer; begin with a:integer;b:real; do d:=3; end

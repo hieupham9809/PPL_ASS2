@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(test_mix_if_while),[],VoidType(),[],[If(BinaryOp(=,Id(a),Id(b)),[If(BinaryOp(=,Id(c),Id(d)),[While(BinaryOp(=,Id(d),Id(e)),[If(IntLiteral(1),[CallStmt(Id(print),[StringLiteral(OK)])],[])])],[AssignStmt(Id(c),IntLiteral(1))])],[])])])
+Program([FuncDecl(Id(a),[],VoidType,[],[For(Id(i),IntLiteral(2),IntLiteral(400),True,[CallStmt(Id(print),[BinaryOp(+,Id(i),Id(j)),StringLiteral( )]),Continue])])])

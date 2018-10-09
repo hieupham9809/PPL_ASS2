@@ -1,10 +1,6 @@
 
-                Procedure test1() ;
-                BEgin
-	               if a=b then
-	               BEgin
-		                 b := c ;
-		                 if(e <> f) then begin test1(a,c) ; end
-	               EnD
-                EnD
-                
+        var a:integer;
+        var b:real;
+        var c:string;
+        var d:boolean;
+        

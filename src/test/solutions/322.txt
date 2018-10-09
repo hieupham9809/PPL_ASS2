@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(foo),[VarDecl(Id(c),FloatType)],VoidType(),[],[For(Id(i)IntLiteral(1),BinaryOp(+,Id(m),IntLiteral(10)),True,[CallStmt(Id(print),[Id(i)]),Break])])])
+Program([FuncDecl(Id(a),[],VoidType,[],[While(BooleanLiteral(True),[CallStmt(Id(b),[])])])])

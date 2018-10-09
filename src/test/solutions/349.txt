@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(fibonacy),[VarDecl(Id(x),IntType)],IntType,[VarDecl(Id(f1),IntType),VarDecl(Id(f2),IntType),VarDecl(Id(temp),IntType)],[If(BinaryOp(<=,Id(x),IntLiteral(2)),[Return(Some(IntLiteral(1)))],[AssignStmt(Id(temp),BinaryOp(+,CallExpr(Id(fibonacy),[BinaryOp(-,Id(x),IntLiteral(2))]),CallExpr(Id(fibonacy),[BinaryOp(-,Id(x),IntLiteral(1))])))]),Return(Some(Id(temp)))])])
+Program([FuncDecl(Id(a),[],VoidType,[],[CallStmt(Id(putLn),[]),AssignStmt(Id(a),CallExpr(Id(putLn),[]))])])

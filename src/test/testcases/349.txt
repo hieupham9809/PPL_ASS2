@@ -1,12 +1,1 @@
-
-                function fibonacy(x: integer): integer;
-                var f1,f2: integer;
-                temp: integer;
-                Begin
-                 if x<=2 then
-                  return 1;
-                 else
-                  temp := fibonacy(x-2)+ fibonacy(x-1);
-                  return temp;
-                end
-                
+procedure a(); begin putLn();a:=putLn(); end

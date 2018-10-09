@@ -220,7 +220,7 @@ class LexerSuite(unittest.TestCase):
                     bar();
                 end
             end
-        ""","""function,foo,(,b,:,array,[,1,..,2,],of,integer,),:,array,[,2,..,3,],of,real,;,var,a,:,array,[,2,..,3,],of,real,;,begin,if,(,),then,return,a,;,else,return,b,;,end,<EOF>""",176))
+        ""","""procedure,foo,(,),;,begin,while,trUE,do,begin,bar,(,),;,end,end,<EOF>""",176))
     def test_keyword_no_space_1(self):
         self.assertTrue(TestLexer.test("thelineisnotBREAKANDnospace","thelineisnotBREAKANDnospace,<EOF>",177)) #is ID
     def test_keyword_no_space_2(self):

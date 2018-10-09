@@ -1,13 +1,1 @@
-
-                procedure test() ;
-                begin
-	               if a=b then
-	               begin
-		                 b := c ;
-		                 if(e <> f) then foo(a,c) ;
-                    if a=b then if c=d then while (d=e) do
-                   beGin
-                   eND
-	               end
-                end
-                
+procedure a(); begin putBoolLn();a:=putBoolLn(); end

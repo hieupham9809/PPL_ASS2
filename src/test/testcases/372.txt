@@ -1,35 +1,8 @@
 
-        function foo(n:integer;x:array[1 .. 10] of integer):array [1 .. 10] of integer;
-        var b:array[1 .. 10] of integer;
-        begin
-            with i:integer; do 
-                if n > 0 then
-                    for i := n downto a[n] do begin
-                        b[i] := a[i] + x[i];
-                        if i = a[x[i]] then
-                            return x;
-                        else
-                            continue;
-                    end
-                else
-                    for i := 1 to n mod a[n] do begin
-                        b[i] := a[i] and then x[i] or else b[i];
-                        if a[x[i]] then
-                            return x;
-                        else
-                            break;
-                    end
-            return foo(foo(x),a[x[n]]);
-        end
-        procedure main(); 
-        var i:integer;
-        begin
-            i := getIntLn();
-            foo(a,i);
-            with i:integer; do
-                for i := 1 to 10 do
-                    putIntLn(a[i]);
-        end
-        var a:array[1 .. 10] of integer;
-
-        
+                procedure hahaha();
+                begin
+                    a:=b;
+                    b:=b<2;
+                    x:= a <> b;
+                end
+                

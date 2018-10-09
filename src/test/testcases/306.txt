@@ -1,3 +1,1 @@
-function foo ():INTEGER; begin
-            if 5 > 3 then a := b; else b:=c;
-        end
+procedure a();begin a:=true;a:=True;a:=tRUE;a:=TrUe; end

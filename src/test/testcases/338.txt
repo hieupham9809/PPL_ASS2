@@ -1,16 +1,1 @@
-
-                procedure swap() ;
-                var a: array[0 .. 1] of integer;
-                 i,j,temp: integer;
-                beGin
-                    for i := 0 to n do
-                        for j:= i+1 to n-1 do
-                            if(a[i]>a[j]) then
-                            beGin
-                            temp := a[i];
-                            a[i] := a[j];
-                            a[j] := temp;
-                            eND
-                    print(a);
-                eND
-                
+function a():integer; begin return 1; end

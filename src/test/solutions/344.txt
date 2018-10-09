@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(Min),[VarDecl(Id(N),IntType)],IntType,[VarDecl(Id(x),IntType),VarDecl(Id(y),IntType)],[If(BinaryOp(<=,Id(x),Id(y)),[AssignStmt(Id(i),Id(x))],[AssignStmt(Id(i),Id(y))])])])
+Program([FuncDecl(Id(a),[],VoidType,[],[CallStmt(Id(putFloatLn),[]),AssignStmt(Id(a),CallExpr(Id(putFloatLn),[]))])])

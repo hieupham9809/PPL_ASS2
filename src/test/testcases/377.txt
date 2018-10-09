@@ -1,13 +1,7 @@
 
-procedure foo();
-begin
-    with i: real;
-    do begin
-        ok();
-        a := 4;
-        return;
-        break;
-        continue;
-        return hoho;
-    end
-end
+        procedure foo(a, b: integer ; c: real) ;
+            BEGIN
+                with a , b : integer ; c : array [1 .. 2] of real ; do
+                d := c [a] + b ;
+            END
+        

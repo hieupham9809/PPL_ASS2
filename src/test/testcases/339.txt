@@ -1,11 +1,1 @@
-
-                Function CountX(A:array[0 .. 100] of integer; N,X : Integer) : Integer;
-                Var i , Count : Integer;
-                Begin
-                 Count := 0;
-                 For i:=1 to N do
-                  If ( A[i] = X ) then
-                   Count := Count + 1;
-                 return Count;
-                End
-                
+procedure a(); begin getInt();a:=getInt(); end

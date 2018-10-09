@@ -1,6 +1,6 @@
-function foo(c: real; d: integer): integer;
-                   BEGIN
-                    c := d;
-                    return c;
-                    foo(foo());
-                   END
+
+                procedure bachkhoa();
+                begin
+                    x:=abc+4;
+                end
+                

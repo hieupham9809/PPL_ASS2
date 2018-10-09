@@ -1,2 +1,11 @@
 
-var a, b, c: array[1 .. 2] of integer;
+        function foo(n: integer; m:integer): integer;
+        begin
+            for i:=1 downto n do
+                for j := i to n -1 do
+                begin
+                    s := s + 1;
+                    if(i = (m+n)/2) then s:=s-1;
+                end
+        end
+        

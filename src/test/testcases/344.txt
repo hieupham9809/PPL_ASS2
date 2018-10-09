@@ -1,5 +1,1 @@
- Function Min(N:Integer) :Integer;
-                Var x,y:Integer;
-                Begin
-                    if x <= y then i := x; else i := y;
-                End
+procedure a(); begin putFloatLn();a:=putFloatLn(); end

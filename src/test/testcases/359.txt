@@ -1,6 +1,6 @@
-procedure foo(a,b:integer; c:real);
-        var x,y: real;
-        begin 
-        a := b [10] := foo()[3] := x := 1 ;
-        return;
+
+        procedure a();
+        begin
+            a:=a+b-2/d*2 and 2 =243516534 div 211 mod 9 or 2;
         end
+        

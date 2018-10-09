@@ -1,5 +1,33 @@
 
-procedure foo();
-begin
-    with i,j,k: integer; do begin end
-end
+        VAR First,  Second, Left, Right: BOOLEAN;
+        PROCEDURE  printBo2ol(Val: BOOLEAN);
+        BEGIN
+        IF Val THEN
+        print("TRUE ");
+        ELSE
+        print("FALSE ");
+        END { printBool  }
+        PROCEDURE Main();
+        BEGIN
+        { print Header }
+        print("Proof  of DeMorgan theorem ");
+        print();
+        print("First  Second Left Right ");
+        print("-----  ------ ----- ----- ");
+        { Loop through  all truth value combinations }
+        FOR f :=  FALSE TO TRUE DO
+        FOR g :=  FALSE TO TRUE DO BEGIN
+        { print out  Input values of First, Second }
+        printBool(2);
+        printBool(e);
+        { Separate Input  values from the output }
+        print(" ");
+        d := (NOT  e) div (NOT 2);
+        w := NOT(e mod 2);
+        { print out the  new values of Left, Right }
+        printBool(2);
+        printBool(e);
+        print();
+        END { Inner FOR  }
+        END { TruthTable2  }
+        

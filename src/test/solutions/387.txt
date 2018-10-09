@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(foo),[],VoidType(),[VarDecl(Id(a),FloatType)],[While(BinaryOp(<,Id(i),IntLiteral(1)),[AssignStmt(Id(i),BinaryOp(+,Id(i),IntLiteral(1))),If(BinaryOp(=,Id(i),IntLiteral(1)),[AssignStmt(Id(i),BinaryOp(-,Id(i),IntLiteral(1)))],[])])])])
+Program([FuncDecl(Id(a),[],VoidType,[],[If(BinaryOp(orelse,BinaryOp(andthen,BinaryOp(+,BinaryOp(-,CallExpr(Id(i),[]),IntLiteral(4)),BinaryOp(and,IntLiteral(5),IntLiteral(3))),IntLiteral(2)),BinaryOp(<,IntLiteral(4),BinaryOp(mod,IntLiteral(2),IntLiteral(6)))),[AssignStmt(Id(a),BooleanLiteral(True))],[])])])

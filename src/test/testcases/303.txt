@@ -1,1 +1,1 @@
-var a,b,c: integer;
+var a:integer;

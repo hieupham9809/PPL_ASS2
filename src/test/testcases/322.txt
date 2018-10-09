@@ -1,7 +1,1 @@
-pROCEDURE foo(c: real);
-                   BEGIN
-                    FOR i:=1 to m+10 do beGin
-                        print(i);
-                        brEaK;
-                    end
-                   END
+procedure a(); begin while true do b(); end

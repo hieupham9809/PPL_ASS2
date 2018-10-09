@@ -1,5 +1,10 @@
 
-procedure foo();
-begin
-    a := 00000012345;
-end
+                Procedure replaceNumber (A:array[0 .. 100] of integer;N, x,y:Integer);
+                Var i:Integer;
+                Begin
+                 For i:=0 to N do
+                  If(A[i] = x) then { x ==> y }
+                  A[i] := y :=z;
+                  return;
+                End
+                

@@ -1,7 +1,1 @@
-function statement_FOR(c: real): STRIng;
-                   BEGIN
-                    FOR i:=1 to m+10
-                    do
-                        s := s + 1;
-                        m := s;
-                   END
+procedure a(); begin if a=2 then b(); else c(); end

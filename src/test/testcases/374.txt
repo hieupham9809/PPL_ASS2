@@ -1,5 +1,8 @@
 
-procedure foo();
-begin
-    with i: integer; do begin end
-end
+                procedure main();
+                begin
+                    a:=9=b;
+                    b:=b=2;
+                    x:= a = 2 + b;
+                end 
+                

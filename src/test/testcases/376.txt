@@ -1,9 +1,8 @@
 
-procedure foo();
-begin
-    with i,j,k: integer; 
-        g: String;
-        h,p,t: BooLean;
-    do begin
-    end
-end
+                procedure chas();
+                begin
+                    a:=4 +  b;
+                    b:=b=2;
+                    x:= n<=b;
+                end 
+                

@@ -1,6 +1,7 @@
-function IF_statement(c: integer): real ;
-                   var y,z:real ;
-                   BEGIN
-                    if(a>=1) then a:=1 ;
-                    if a=1 then return;
-                   END
+
+            procedure TCastleBaseTestCaseAssertVectorEquals(Expected, Actual: Integer);
+            begin
+                if not TVector2ByteEquals(Expected, Actual) then
+                Fail(Format("Vectors (TVector2Byte) are not equal: expected: %s, actual: %s"));
+            end
+        

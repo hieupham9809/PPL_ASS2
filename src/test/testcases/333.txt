@@ -1,16 +1,1 @@
-
-                VAR i: real ;
-                FUNCTION funcmix(): integer ;
-                begin
-	               return 100;
-                end
-                procedure procmix() ;
-                var
-	               m: integer ;
-                begin
-	               m := f() ;  
-                   put(m);
-	               put(main);
-                end
-                var g: real ;
-                
+procedure a(); begin return 2; end

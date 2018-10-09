@@ -1,10 +1,6 @@
 
-                Function nested_scope(  N :Integer) : Boolean;
-                Var Flag : Boolean;
-                 i :Integer;
-                BEgin
-                 begin
-                 EnD
-                 return Flag;
-                EnD
+                procedure linhcute();
+                begin
+                    x:=a div b ;
+                end
                 

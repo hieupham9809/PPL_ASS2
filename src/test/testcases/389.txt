@@ -1,12 +1,6 @@
 
-procedure foo();
-var a: real;
-begin
-    with 
-        a: integer;
-        b, c: array [0 .. 15] of Boolean;
-        x, y, z: real;
-    do begin
-        a := x := y := 3;
-    end
-end
+                procedure yrc();
+                begin
+                    foo(a+94<5)[x>=6]:= 9 div 4 + 3 mod 2;
+                end
+                

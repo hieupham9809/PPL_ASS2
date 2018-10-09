@@ -1,2 +1,8 @@
 
-var a: array[1 .. 2] of integer;
+                procedure sua();
+                begin
+                    a:=man;
+                    b:=women;
+                    x:= a >= b ;
+                end
+                

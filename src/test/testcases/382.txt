@@ -1,7 +1,8 @@
 
-procedure foo();
-var a: real;
-
-begin
-    foo(2)[3+x] := a[b[f+y[2]]] + 3;
-end
+                procedure suag();
+                begin
+                    a:=1;
+                    b:=2;
+                    foo(2)[3+x] := a[b[2]] +3;
+                end
+                

@@ -1,8 +1,1 @@
-proCeduRE foo(m, n: integer; c: real) ;
-                  var x,y,z: real ;
-                  BEGIN
-                    m := 12;
-                    n := c[2];
-                    z := n;
-                    m := z;
-                  END
+procedure a(); begin a:=b:=c:=d;end

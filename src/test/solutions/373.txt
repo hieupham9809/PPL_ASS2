@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(foo),[],VoidType(),[],[With([VarDecl(Id(i),IntType)],[CallStmt(Id(ok),[])])])])
+Program([FuncDecl(Id(a),[],VoidType,[],[AssignStmt(Id(a),BinaryOp(andthen,BinaryOp(<>,Id(f),Id(r)),Id(b)))])])

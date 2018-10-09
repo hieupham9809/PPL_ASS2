@@ -1,5 +1,3 @@
-pROCEDURE WITHstm(c: real) ;
-                   BEGIN
-                    with a , b : integer ; c : array [2 .. 4] of real ; dO
-                    d := c[a] + b ;
-                   END
+
+        procedure a(); begin a:=2=2; end
+        

@@ -1,6 +1,24 @@
-FUNCTION ASSIGN_with_index_express_of_FUNCCALL(c: integer): integer ;
-                   var x,y: integer;
-                   BEGIN
-                    a[m+n] := a[m+1] := foo()[m*2] := a[2 div a] := (a>=m)
-                    and then (b<=n);
-                   END
+
+            function TCefBrowserRefGetFrameIdentifiers(aFrameCount : InteGeR; aFrameIdentifierArray : string) : boolean;
+            var
+                i : Integer;
+            begin
+                Result := False;
+
+                if (aFrameCount > 0) then
+                begin
+                    SetLength(aFrameIdentifierArray, aFrameCount);
+                    i := 0;
+                    while (i < aFrameCount) do
+                        begin
+                           aFrameIdentifierArray[i] := 0;
+                           inc(i);
+                        end
+
+            PCefBrowserget_frame_identifiers(PCefBrowser(FData), aFrameCount, aFrameIdentifierArray[0]);
+
+            Result := True;
+            end
+           if CustomExceptionHandler("TCefBrowserRef.GetFrameIdentifiers", e) then break;
+            end
+        

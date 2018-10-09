@@ -16,26 +16,19 @@ options{
 program  : declaration+ EOF;
 declaration     : varDec | funcDec | procDec;
 
-//varDec          : VAR listOfDecls;
 varDec            : VAR listOfType (SEMI listOfType)* SEMI;
-//listOfDecls     : listOfType listOfDecls1;
-//listOfDecls1    : SEMI listOfType listOfDecls1 | SEMI;
-//listOfType      : listID COLON types ;
+
 listOfType      : ID (COMMA ID)* COLON types ;
-//listID          : ID (COMMA ID)*;
-//listID1         : COMMA ID listID1 | ;
 
 // type
 
 types           : BOOLEAN | INTEGER | REAL | STRING | arraycp;
 arraycp         : ARRAY LSB arrayindex DDOT arrayindex RSB OF (BOOLEAN | INTEGER | REAL | STRING);
-//arrayType       : BOOLEAN | INTEGER | REAL | STRING;
 
 // funcDec
 funcDec         : FUNCTION ID LB paramList RB COLON types SEMI varDec? compound_st;
 paramList       : listOfType (SEMI listOfType)* | ;
-//paramList1      : SEMI paramDec paramList1 | ;
-//paramDec        : listOfType;
+
 compound_st     : BEGIN statement* END;
 
 // procDec
@@ -54,31 +47,10 @@ exp5        : exp5 LSB expression RSB | exp6;
 exp6        : LB expression RB | exp7;
 exp7        : operand | call_st ;
 operand     : INTLIT | REALIT | STRLIT | ID | BOOLIT;
-/*
-expression  : exp1 ((AND THEN) exp1 | (OR ELSE) exp1)*;
-exp1        : exp2 (EQOP | NEQOP | LTOP | LTEOP | GTOP | GTEOP) exp2 | exp2;
-exp2        : exp3 ((ADDOP | SUBOP | OR) exp3)*;
-exp3        : exp4 ((DIVOP | MULOP | DIV | MOD | AND) exp4)*;
-exp4        : (SUBOP | NOT)* exp5;
-exp5        : exp6 (LSB expression RSB)*;
-exp6        : exp7 | LB expression RB;
-exp7        : operand | call_st;
-operand     : INTLIT | REALIT | STRLIT | ID | BOOLIT;
-*/
+
 
 indexEx : exp5 LSB expression RSB;
-/* 
-expression2  : expression2 (AND THEN) exp11
-            | expression2 (OR ELSE) exp11 | exp11;
-exp11        : exp22 (EQOP | NEQOP | LTOP | LTEOP | GTOP | GTEOP) exp22 | exp22;
-exp22        : exp22 (ADDOP | SUBOP | OR) exp33 | exp33;
-exp33        : exp33 (DIVOP | MULOP | DIV | MOD | AND) exp44 | exp44;
-exp44        : (SUBOP | NOT) exp44 | exp55;
-exp55        : exp55 LSB expression RSB | exp66;
-exp66        : LB expression RB | exp77;
-exp77        : operand2 | call_st ;
-operand2     : ID ;
-*/
+
 // statements
 statement       : assign_st SEMI
                 | if_st 
@@ -191,13 +163,14 @@ GTEOP   : '>=';
 // Literals
 fragment DIGIT:  [0-9];
 INTLIT  : DIGIT+;
-REALIT  : ((NUM_HAS_P | DIGIT+) EXPN) | NUM_HAS_P;
+//REALIT  : ((NUM_HAS_P | DIGIT+) EXPN) | NUM_HAS_P;
+REALIT  : DIGIT+ '.'? | DIGIT* '.'? DIGIT+ ([eE]'-'? DIGIT+)?;
 BOOLIT  : TRUE | FALSE;
 
 ID  : (IDCHAR | '_')(IDCHAR | '_' | '0'..'9')*;
 
 
-UNCLOSE_STRING: '"' (~["'\n\b\f\\] | ('\\' ["'nbf\\]))*              
+UNCLOSE_STRING: '"' (~["'\n\r\\] | ('\\' ["'nbftr\\]))*              
             {
                 self.text = self.text[1:]    
                 raise UncloseString(self.text)    
@@ -207,7 +180,7 @@ STRLIT      : UNCLOSE_STRING '"'
                             self.text = self.text[1:-1]
                         };
 
-ILLEGAL_ESCAPE: UNCLOSE_STRING ('\\' ~[bfn"'])
+ILLEGAL_ESCAPE: UNCLOSE_STRING ('\\' ~[bfntr"'])
                                             {
                                                 raise IllegalEscape(self.text[1:])
                                             }; 

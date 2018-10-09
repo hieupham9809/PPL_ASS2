@@ -1,4 +1,9 @@
 
-        procedure foo(a,b:integer; c:real);
+        procedure a();
         begin
-        if (b>=a) and (b>=c) then max:=b; end
+            if a=2 then
+                if a=2 then c:=7;
+                else w:=3;
+        end
+
+        

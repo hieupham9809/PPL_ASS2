@@ -1,1 +1,1 @@
-Program([VarDecl(Id(i),FloatType),FuncDecl(Id(funcmix),[],IntType,[],[Return(Some(IntLiteral(100)))]),FuncDecl(Id(procmix),[],VoidType(),[VarDecl(Id(m),IntType)],[AssignStmt(Id(m),CallExpr(Id(f),[])),CallStmt(Id(put),[Id(m)]),CallStmt(Id(put),[Id(main)])]),VarDecl(Id(g),FloatType)])
+Program([FuncDecl(Id(a),[],VoidType,[],[Return(Some(IntLiteral(2)))])])

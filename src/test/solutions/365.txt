@@ -1,1 +1,1 @@
-Program([VarDecl(Id(d),ArrayType(1,5,IntType))])
+Program([FuncDecl(Id(a),[],VoidType,[],[If(BinaryOp(or,BinaryOp(or,Id(d),CallExpr(Id(d),[])),ArrayCell(Id(d),CallExpr(Id(d),[]))),[CallStmt(Id(d),[])],[])])])

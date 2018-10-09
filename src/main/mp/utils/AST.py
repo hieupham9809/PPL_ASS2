@@ -60,6 +60,7 @@ class ArrayType(Type):
 class VoidType(Type): 
     def __str__(self):
         return "VoidType()" 
+        #return "VoidType" 
 
     def accept(self, v, param):
         return v.visitVoidType(self, param)

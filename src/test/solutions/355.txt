@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(test_more_stmt),[VarDecl(Id(m),IntType),VarDecl(Id(n),IntType)],IntType,[VarDecl(Id(a),FloatType)],[For(Id(i)IntLiteral(1),IntLiteral(10),True,[AssignStmt(Id(a),BinaryOp(+,Id(a),IntLiteral(1)))]),Break])])
+Program([VarDecl(Id(a),IntType),VarDecl(Id(b),IntType),VarDecl(Id(c),IntType),VarDecl(Id(d),IntType),VarDecl(Id(e),IntType),VarDecl(Id(f),BoolType),VarDecl(Id(g),BoolType),VarDecl(Id(h),IntType),VarDecl(Id(j),IntType),VarDecl(Id(q),StringType),VarDecl(Id(w),StringType)])

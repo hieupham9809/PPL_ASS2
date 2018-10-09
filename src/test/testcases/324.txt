@@ -1,4 +1,1 @@
-PROCEDURE foo(c: real);
-                   BEGIN
-                    while (1) do ContinuE ;
-                   END
+procedure a(); begin for i:=1 to 2 do b(); end

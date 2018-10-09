@@ -1,8 +1,7 @@
 
-                procedure mainfoo() ;
-                beGin
-                 a[b[2]] := 100;
-                 foo(2);
-                 return ;
-                eND
-                
+        procedure a();
+        begin
+            a();
+            a:=a();
+        end
+        

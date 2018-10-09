@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(nested_WITH),[VarDecl(Id(d),FloatType)],StringType,[],[With([VarDecl(Id(c),IntType),VarDecl(Id(d),IntType),VarDecl(Id(c),ArrayType(1,2,FloatType))],[With([VarDecl(Id(a),IntType),VarDecl(Id(b),IntType)],[CallStmt(Id(nested_WITH),[Id(a),Id(b),StringLiteral(anc)])])])])])
+Program([FuncDecl(Id(a),[],VoidType,[],[If(BinaryOp(=,Id(a),IntLiteral(2)),[CallStmt(Id(b),[])],[])])])

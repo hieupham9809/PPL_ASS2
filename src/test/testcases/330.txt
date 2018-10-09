@@ -1,5 +1,13 @@
-function foo(c: real): integer;
-                   BEGIN
-                    foo(3,a+1,x and then y, c,a[1],foo(1,2)[m+1]);
-                    return foo2() + foo() + 1;
-                   END
+
+                procedure writesquare(sq : real;limit : integer);
+                var
+                   row,col : integer;
+                begin
+                   for row:=1 to Limit do
+                     begin
+                        for col:=1 to (limit div 2) do
+                          write(sq[row*2*col-1],sq[row*2*col],endl);
+                        writeln(sq[row*limit]);
+                     end
+                end
+        

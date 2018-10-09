@@ -1,6 +1,34 @@
-function foo(c: real): integer;
-                   BEGIN
-                    text(insert); { colour}
-                	{.comment here.}
-                    return func(a(1,2));
-                   END
+
+            procedure makesquare( sq : real; limit : integer);
+                var
+                   num,r,c : integer;
+                begin
+                   for r:=1 to limit do
+                     for c:=1 to limit do
+                       sq[rc] := 0;
+                   if (limit and 1)<>0 then
+                     begin
+                        r:=(limit+1) div 2;
+                        c:=limit;
+                        for num:=1 to limit*limit do
+                          begin
+                             if sq[rc]<>0 then
+                               begin
+                                  dec(r);
+                                  if r<1 then
+                                    inc(r,limit);
+                                  dec(c,2);
+                                  if c<1 then
+                                    inc(c,limit);
+                               end
+                             sq[rc]:=num;
+                             inc(r);
+                             if r>limit then
+                               dec(r,limit);
+                             inc(c);
+                             if c>limit then
+                               dec(c,limit);
+                          end
+                     end
+                 end
+            
